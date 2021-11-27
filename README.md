@@ -14,7 +14,7 @@ git clone https://github.com/brettpetch/hosted-scripts.git /home/$(whoami)/scrip
 Do you think you can do it better? Go nuts. PRs are welcome. Please ensure your permissions are set to 755 on commit.
 
 ## Support
-These scripts **come with no support**. If you have questions, feel free to ask them in their respective discords (dependant on vendor).
+These scripts **come with no support**. If you have questions, feel free to ask them in their respective discords (dependant on vendor). Remember to respect the rules of the vendors in their discords and be respectful to community members lending their assistance.
 
 ### For Swizzin.net Customers: 
 
