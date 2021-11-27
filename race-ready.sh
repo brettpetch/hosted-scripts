@@ -29,10 +29,14 @@ function qbit_race() {
     echo "Installing qbit-race"
     mkdir -p "/home/${user}/scripts"
     RACE_DIR="/home/${user}/scripts/qbit-race"
-    git clone https://github.com/ckcr4lyf/qbit-race.git "${RACE_DIR}" >> "$log" 2>&1 || {
-        echo "Failed to clone qbit-race."
-        exit 1
-    }
+    if [[ -d "${RACE_DIR}" ]]; then
+        echo "qbit-race has already been cloned." 
+    else
+        git clone https://github.com/ckcr4lyf/qbit-race.git "${RACE_DIR}" >> "$log" 2>&1 || {
+            echo "Failed to clone qbit-race."
+            exit 1
+        }
+    fi
     cp "${RACE_DIR}/sample.env" "${RACE_DIR}/.env"
     sed -i "s|QBIT_HOST=127.0.0.1|QBIT_HOST=${subnet}|g" "${RACE_DIR}/.env"
     sed -i "s|QBIT_PORT=8080|QBIT_PORT=${port}|g" "${RACE_DIR}/.env"
