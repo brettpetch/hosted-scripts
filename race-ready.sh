@@ -36,6 +36,10 @@ function qbit_race() {
     sed -i 's|CONCURRENT_RACES: 1,|CONCURRENT_RACES: 3,|g' "${RACE_DIR}/settings.js"
     sed -i 's|REANNOUNCE_INTERVAL: 5000,|REANNOUNCE_INTERVAL: 7000,|g' "${RACE_DIR}/settings.js"
     npm --prefix "${RACE_DIR}" install "${RACE_DIR}" >> "$log" 2>&1
+    echo "Your script path is $(which node)"
+    echo "Your script argument is '${RACE_DIR}/bin/autodl_feed.js \"\$(InfoHash)\" \"\$(InfoName)\" \"\$(Tracker)\" \"\$(TorrentPathName)\"'"
+    echo "Your post-script is '$(which node) ${RACE_DIR}/bin/post_race.js \"%I\" \"%N\" \"%T\"'"
+    echo "qbit-race has been installed."
     touch ~/.install/.qbit-race.lock
 }
 
