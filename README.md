@@ -5,12 +5,18 @@ This repo is a helper repo for Swizzin.net & SBIO Seedboxes. Here you will find 
 ## Install
 If you actually want all this stuff, you can grab the repository by doing 
 
+### The Whole Enchilada
 ```bash
 mkdir -p /home/$(whoami)/scripts/
 git clone https://github.com/brettpetch/hosted-scripts.git /home/$(whoami)/scripts/hosted-scripts
 ```
 
-## Local Development
+### Just a Slice
+```bash
+bash <(curl -sL "https://github.com/brettpetch/hosted-scripts/raw/master/scriptname.sh")
+```
+
+## Development
 Do you think you can do it better? Go nuts. PRs are welcome. Please ensure your permissions are set to 755 on commit.
 
 ## Support
