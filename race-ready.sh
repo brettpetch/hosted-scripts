@@ -18,8 +18,12 @@ function _nvm() {
             exit 1
         }
         echo "Node installed."
+        npm install -g npm@latest "$log" 2>&1
     else
         echo "Node is already installed."
+        echo "Updating npm..."
+        npm install -g npm@latest "$log" 2>&1
+        echo "npm updated..."
     fi
 }
 
