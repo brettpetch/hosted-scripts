@@ -41,9 +41,9 @@ function qbit_race() {
 
 function nightwalker() {
     git clone "https://github.com/brettpetch/nightwalker.git" /home/${user}/scripts/nightwalker >> "$log" 2>&1
-    box stop qbittorrent
+    sudo box stop qbittorrent
     sed -i 's|WebUI\\RootFolder=.*|WebUI\\RootFolder=/home/${user}/scripts/nightwalker/|g' /home/${user}/.config/qBittorrent/qBittorrent.conf
-    box start qbittorrent
+    sudo box start qbittorrent
     touch ~/.install/.nightwalker.lock
 }
 
