@@ -4,20 +4,25 @@ user=$(whoami)
 mkdir -p ~/.logs/
 touch ~/.logs/overseerr.log
 log="$HOME/.logs/overseerr.log"
-_deps() {
+
+function _deps() {
+    ## Function for installing nvm.
     if [[ ! -d /home/$user/.nvm ]]; then
         echo "Installing node"
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
         export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-        nvm install --lts >> "$log" 2>&1 || {
+         
+        echo "nvm installed."
+    else
+        echo "nvm is already installed."
+    fi
+    nvm install --lts >> "$log" 2>&1 || {
             echo "node failed to install"
             exit 1
         }
-        echo "node installed."
-    else
-        echo "node is already installed."
-    fi
+    echo "Node LTS installed."
+    echo "Installing Yarn"
     npm install -g yarn >> "$log" 2>&1 || {
         echo "Yarn failed to install"
         exit 1
@@ -25,7 +30,7 @@ _deps() {
     echo "Yarn installed."
 }
 
-_overseer_install() {
+function _overseer_install() {
     echo "Downloading and extracting source code"
     dlurl="$(curl -sS https://api.github.com/repos/sct/overseerr/releases/latest | jq .tarball_url -r)"
     wget "$dlurl" -q -O /tmp/overseerr.tar.gz >> "$log" 2>&1 || {
@@ -64,7 +69,7 @@ function _port() {
     comm -23 <(seq "${LOW_BOUND}" "${UPPER_BOUND}" | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
 
-_service() {
+function _service() {
     mkdir -p "/home/$user/.config/systemd/user/"
     mkdir -p "/home/$user/.install/"
     mkdir -p "/home/$user/.config/overseerr/"
