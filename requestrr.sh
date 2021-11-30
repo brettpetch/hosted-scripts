@@ -213,7 +213,7 @@ function _install() {
         systemctl --user -q enable --now requestrr >> "${log}" 2>&1
         touch ~/.install/.requestrr.lock
         echo "Requestrr service installed and enabled"
-        echo "Requestrr is available at http://$(hostname):$port/requestrr ;Secure your installation manually through the web interface."
+        echo "Requestrr is available at http://$(hostname -f):$port/requestrr ;Secure your installation manually through the web interface."
     else
         echo "requestrr is already installed."
     fi
