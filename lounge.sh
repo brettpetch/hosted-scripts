@@ -12,14 +12,17 @@ function _deps() {
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
         export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-        nvm install --lts >> "$log" 2>&1 || {
+         
+        echo "nvm installed."
+    else
+        echo "nvm is already installed."
+    fi
+    nvm install --lts >> "$log" 2>&1 || {
             echo "node failed to install"
             exit 1
         }
-        echo "node installed."
-    else
-        echo "node is already installed."
-    fi
+    echo "Node LTS installed."
+    echo "Installing Yarn"
     npm install -g yarn >> "$log" 2>&1 || {
         echo "Yarn failed to install"
         exit 1
@@ -339,17 +342,8 @@ module.exports = {
 EOF
     bash -c "thelounge install thelounge-theme-zenburn"
     # Figger out if hostname is Swizzin, LW Swizzin, or SBIO
-    if [[ "$(hostname)" =~ xl0* ]]; then
-        domain=lw.swizzin.ltd
-    elif [[ "$(hostname)" =~ xl[1-9] ]]; then
-        domain=swizzin.ltd
-    elif [[ "$(hostname)" =~ app* ]]; then
-        domain=lw.seedbox.io
-    else
-        echo "we don't know who your provider is... use the hostname or ip address provided to you."
-    fi
     echo "thelounge will run on ${port}"
-    echo "Your Lounge instance is up and running at https://$(hostname).${domain}:${port}"
+    echo "Your Lounge instance is up and running at https://$(hostname -f):${port}"
 }
 function _systemd() {
     ## Function responsible for everything systemd
