@@ -93,7 +93,7 @@ EOF
     systemctl --user daemon-reload
     systemctl --user enable --now -q overseerr
     touch ~/.install/.overseerr.lock
-    echo "Overseerr is up and running on http://$(hostname):$port/overseerr"
+    echo "Overseerr is up and running on http://$(hostname -f):$port/overseerr"
 
 }
 
