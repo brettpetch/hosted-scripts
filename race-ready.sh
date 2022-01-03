@@ -72,7 +72,7 @@ function nightwalker() {
     touch ~/.install/.nightwalker.lock
 }
 
-echo "Welcome to The Lounge installer..."
+echo "Welcome to qbit-race installer..."
 echo ""
 echo "What do you like to do?"
 echo "Logs are stored at ${log}"
