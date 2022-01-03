@@ -86,9 +86,6 @@ while true; do
     case $choice in
         "node")
             _nvm
-            _install
-            _systemd
-            _adduser
             break
             ;;
         "qbitrace")
