@@ -60,7 +60,7 @@ parallel = 1
 file_mode = "0644"
 dir_mode = "0755"
 EOF
-
+    # Add API data to config for installed arrs.
     if [[ -f /home/${user}/.install/.sonarr.lock ]]; then 
         sonarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "/home/${user}/.config/Sonarr/config.xml")
         sonarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "/home/${user}/.config/Sonarr/config.xml")
@@ -82,6 +82,20 @@ EOF
         echo " [[radarr]]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
         echo "  url = \"http://${subnet}:${radarr_port}/${radarr_base}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
         echo "  api_key = \"${radarr_api}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  paths = [\"/home/${user}/torrents/rtorrent/\",\"/home/${user}/torrents/qbittorrent/\",\"/home/${user}/torrents/deluge/\"]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  protocols = \"torrent\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  timeout = \"10s\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  delete_delay = \"5m\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  delete_orig = false" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+    fi
+
+    if [[ -f /home/${user}/.install/.lidarr.lock ]]; then
+        lidarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "/home/${user}/.config/Lidarr/config.xml")
+        lidarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "/home/${user}/.config/Lidarr/config.xml")
+        lidarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "/home/${user}/.config/Lidarr/config.xml")
+        echo " [[lidarr]]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  url = \"http://${subnet}:${lidarr_port}/${lidarr_base}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+        echo "  api_key = \"${lidarr_api}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
         echo "  paths = [\"/home/${user}/torrents/rtorrent/\",\"/home/${user}/torrents/qbittorrent/\",\"/home/${user}/torrents/deluge/\"]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
         echo "  protocols = \"torrent\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
         echo "  timeout = \"10s\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
