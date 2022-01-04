@@ -38,7 +38,7 @@ function _overseer_install() {
     }
     mkdir -p ~/overseerr
     tar --strip-components=1 -C ~/overseerr -xzvf /home/${user}/overseerr.tar.gz >> "$log" 2>&1
-    rm /tmp/overseerr.tar.gz
+    rm /home/${user}/overseerr.tar.gz
     echo "Code extracted"
 
     # Changing baseurl before build
