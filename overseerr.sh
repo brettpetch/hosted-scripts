@@ -32,12 +32,13 @@ function _deps() {
 function _overseer_install() {
     echo "Downloading and extracting source code"
     dlurl="$(curl -sS https://api.github.com/repos/sct/overseerr/releases/latest | jq .tarball_url -r)"
-    wget "$dlurl" -q -O /tmp/overseerr.tar.gz >> "$log" 2>&1 || {
+    wget "$dlurl" -q -O /home/${user}/tmp/overseerr.tar.gz >> "$log" 2>&1 || {
         echo "Download failed"
         exit 1
     }
     mkdir -p ~/overseerr
     tar --strip-components=1 -C ~/overseerr -xzvf /tmp/overseerr.tar.gz >> "$log" 2>&1
+    rm /tmp/overseerr.tar.gz
     echo "Code extracted"
 
     # Changing baseurl before build
