@@ -1,9 +1,9 @@
 #!/bin/bash
 # thx flyingsausages and swizzin team
-user=$(whoami)
+export user=$(whoami)
 mkdir -p ~/.logs/
 touch ~/.logs/overseerr.log
-log="$HOME/.logs/overseerr.log"
+export log="$HOME/.logs/overseerr.log"
 
 function _deps() {
     ## Function for installing nvm.
