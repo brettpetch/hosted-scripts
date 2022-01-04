@@ -18,6 +18,12 @@ git clone https://github.com/brettpetch/hosted-scripts.git /home/$(whoami)/scrip
 bash <(curl -sL "https://github.com/brettpetch/hosted-scripts/raw/master/scriptname.sh")
 ```
 
+## Updates
+
+```bash
+git -C /home/$(whoami)/scripts/hosted-scripts pull
+```
+
 ## Development
 Do you think you can do it better? Go nuts. PRs are welcome. Please ensure your permissions are set to 755 on commit.
 
