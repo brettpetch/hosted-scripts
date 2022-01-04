@@ -17,7 +17,7 @@ function _deps() {
     else
         echo "nvm is already installed."
     fi
-    nvm install --lts >> "$log" 2>&1 || {
+    nvm install --lts || {
             echo "node failed to install"
             exit 1
         }
