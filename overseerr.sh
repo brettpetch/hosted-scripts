@@ -10,17 +10,16 @@ function _deps() {
     if [[ ! -d /home/$user/.nvm ]]; then
         echo "Installing node"
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
-        export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-         
         echo "nvm installed."
     else
         echo "nvm is already installed."
     fi
-    nvm install --lts || {
-            echo "node failed to install"
-            exit 1
-        }
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+    nvm install --lts >> "$log" 2>&1 || {
+        echo "node failed to install"
+        exit 1
+    }
     echo "Node LTS installed."
     echo "Installing Yarn"
     npm install -g yarn >> "$log" 2>&1 || {
