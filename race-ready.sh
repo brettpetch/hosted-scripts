@@ -7,7 +7,7 @@ log="/home/${user}/.logs/race-ready.log"
 port=$(grep 'WebUI\\Port' /home/${user}/.config/qBittorrent/qBittorrent.conf | cut -d= -f2)
 subnet=$(cat /home/${user}/.install/subnet.lock)
 
-function _deps() {
+function _nvm() {
     ## Function for installing nvm.
     if [[ ! -d /home/$user/.nvm ]]; then
         echo "Installing node"
