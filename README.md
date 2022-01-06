@@ -7,6 +7,8 @@ This repo is a helper repo for Swizzin.net & SBIO Seedboxes. Here you will find 
 ## Install
 If you actually want all this stuff, you can grab the repository by doing 
 
+## PSA: DO NOT RUN THE AUTOBRR SCRIPT UNTIL CVE HAS BEEN PATCHED
+
 ### The Whole Enchilada
 ```bash
 mkdir -p /home/$(whoami)/scripts/
