@@ -2,7 +2,8 @@
 
 This repo is a helper repo for Swizzin.net & SBIO Seedboxes. Here you will find additional scripts for installing frequently requested software that hasn't been baked into the real deal yet. Think of this as a beta of a beta. Some stuff might not work, but it's better than nothing at all. Some apps can have authentication configured by us, some can't. Some have no baseurl support, so we just run it on the port. There are no warranties for these scripts. You get whatever is here with no support guaranteed whatsoever. 
 
-**Please dear god don't run these on a dedi unless you don't have root.**
+## DO NOT RUN THESE SCRIPTS ON DEDICATED SERVERS!
+You should not run these scripts on servers running Swizzin Community Edition. This is meant for seedbox.io apprange and swizzin.net customers. If you DO NOT HAVE root on the server in question, you may consider using these. If you DO HAVE ROOT, please just yell in one of the swizzin support channels until I show up.
 
 ## Install
 If you actually want all this stuff, you can grab the repository by doing 
