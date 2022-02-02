@@ -42,7 +42,7 @@ function qbit_race() {
 
     version=$(github_latest_version ckcr4lyf/qbit-race)
     curl -sL "https://github.com/ckcr4lyf/qbit-race/archive/refs/tags/${version}.tar.gz" -o /tmp/qbit-race.tar.gz
-    tar xvf "/tmp/qbit-race.tar.gz" --directory "${RACE_DIR}" --strip-components=1
+    tar xvf "/tmp/qbit-race.tar.gz" --directory "${RACE_DIR}" --strip-components=1 >> "$log" 2>&1
     rm -f /tmp/qbit-race.tar.gz
    
     cp "${RACE_DIR}/sample.env" "${RACE_DIR}/.env"
