@@ -21,6 +21,7 @@ function port() {
 function _install() {
     ssl_port=$(port 14000 16000)
     port=$(port 10000 14000)
+    domain=$(hostname -f)
 
     # Download App
     echo "Downloading Prowlarr"
@@ -96,7 +97,6 @@ PROWLARR
     echo "Restarting prowlarr"
     systemctl restart --user prowlarr
     
-    domain=$(hostname -f)
 
     echo "Prowlarr has been installed. You can access it at http://${domain}:${port}"
     echo "Remember to check your authentication. This is publicly accessible and will contain your API keys and stuff."
