@@ -84,7 +84,7 @@ PROWLARR
 
     echo "Waiting for Prowlarr to start"
     sleep 45
-    apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" /home/"$user"/.config/prowlarr/config.xml)
+    apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" "/home/${user}/.config/prowlarr/config.xml")
     if ! timeout 45 bash -c -- "while ! curl -fkL \"http://127.0.0.1:${port}/api/v1/system/status?apiKey=${apikey}\" >> \"$log\" 2>&1; do sleep 5; done"; then
         echo "Prowlarr API not respond as expected. Please make sure Prowlarr is running."
         exit 1
