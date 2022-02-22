@@ -85,14 +85,15 @@ PROWLARR
     echo "Waiting for Prowlarr to start"
     sleep 45
     apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" "/home/${user}/.config/prowlarr/config.xml")
-    if ! timeout 45 bash -c -- "while ! curl -fkL \"http://127.0.0.1:${port}/api/v1/system/status?apiKey=${apikey}\" >> \"$log\" 2>&1; do sleep 5; done"; then
+    echo "${apikey}"
+    if ! timeout 5 bash -c -- "while ! curl -fkL \"http://127.0.0.1:${port}/api/v1/system/status?apiKey=${apikey}\"; do sleep 5; done"; then
         echo "Prowlarr API not respond as expected. Please make sure Prowlarr is running."
         exit 1
     fi
     read -rep "Please set a password for your prowlarr user ${user}> " -i "" password
     echo "Applying authentication"
     payload=$(curl -skL "http://127.0.0.1:${port}/api/v1/config/host?apikey=${apikey}" | jq ".authenticationMethod = \"forms\" | .username = \"${user}\" | .password = \"${password}\"")
-    curl -sk "http://127.0.0.1:${port}/api/v1/config/host?apikey=${apikey}" -X PUT -H 'Accept: application/json, text/javascript, */*; q=0.01' --compressed -H 'Content-Type: application/x-www-form-urlencoded; charset=UTF-8' --data-raw "${payload}" >> "$log"
+    curl -sk "http://127.0.0.1:${port}/api/v1/config/host?apikey=${apikey}" -X PUT -H 'Accept: application/json, text/javascript, */*; q=0.01' --compressed -H 'Content-Type: application/json' --data-raw "${payload}"
     sleep 15
     echo "Restarting prowlarr"
     systemctl restart --user prowlarr
