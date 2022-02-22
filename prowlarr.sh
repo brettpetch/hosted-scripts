@@ -79,7 +79,7 @@ PROWLARR
     # Enable/Start Prowlarr
     echo "Starting Prowlarr"
     systemctl enable --now --user prowlarr.service
-    echo "Witing for Prowlarr to start"
+    echo "Waiting for Prowlarr to start"
     sleep 45
     apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" /home/"$user"/.config/prowlarr/config.xml)
     if ! timeout 45 bash -c -- "while ! curl -fL \"http://127.0.0.1:${port}/api/v3/system/status?apiKey=${apikey}\" >> \"$log\" 2>&1; do sleep 5; done"; then
