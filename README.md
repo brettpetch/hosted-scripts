@@ -10,8 +10,8 @@ If you actually want all this stuff, you can grab the repository by doing
 
 ### The Whole Enchilada
 ```bash
-mkdir -p /home/$(whoami)/scripts/
-git clone https://github.com/brettpetch/hosted-scripts.git /home/$(whoami)/scripts/hosted-scripts
+mkdir -p $HOME/scripts/
+git clone https://github.com/brettpetch/hosted-scripts.git $HOME/scripts/hosted-scripts
 ```
 
 ### Just a Slice
@@ -22,7 +22,7 @@ bash <(curl -sL "https://github.com/brettpetch/hosted-scripts/raw/master/scriptn
 ## Updates
 
 ```bash
-git -C /home/$(whoami)/scripts/hosted-scripts pull
+git -C $HOME/scripts/hosted-scripts pull
 ```
 
 ## Development
