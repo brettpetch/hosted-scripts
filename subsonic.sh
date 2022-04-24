@@ -8,14 +8,14 @@ touch "$log"
 
 function java_install() {
     type java || {
-    echo "Java not installed..."
-    # Java 8
-    echo "Downloading java"
-    curl -sL "https://javadl.oracle.com/webapps/download/AutoDL?BundleId=246255_165374ff4ea84ef0bbd821706e29b123" -o /tmp/jre.tar.gz >> "$log" 2>&1
-    echo "Extracting java"
-    tar -xvf /tmp/jre.tar.gz --strip-components=1 -C "/home/${user}/.local/" >> "$log" 2>&1
-    rm /tmp/jre.tar.gz
-    . "/home/${user}/.profile"
+        echo "Java not installed..."
+        # Java 8
+        echo "Downloading java"
+        curl -sL "https://javadl.oracle.com/webapps/download/AutoDL?BundleId=246255_165374ff4ea84ef0bbd821706e29b123" -o /tmp/jre.tar.gz >> "$log" 2>&1
+        echo "Extracting java"
+        tar -xvf /tmp/jre.tar.gz --strip-components=1 -C "/home/${user}/.local/" >> "$log" 2>&1
+        rm /tmp/jre.tar.gz
+        . "/home/${user}/.profile"
     }
 }
 
