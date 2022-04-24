@@ -37,7 +37,7 @@ function _install() {
     port=$(port 4096 12000)
 
     echo "Setting up service file"
-
+    mkdir -p "$HOME/.config/systemd/user"
     cat > "$HOME/.config/systemd/user/subsonic.service" << EOF
 [Unit]
 Description=Subsonic Media Server
