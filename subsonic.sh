@@ -30,14 +30,15 @@ function _install() {
     echo "Downloading subsonic"
     mkdir -p "$HOME/.config/subsonic"
     mkdir -p "$HOME/subsonic"
+    mkdir -p $HOME/subsonic/transcode/
+    ln -s $(which ffmpeg) $HOME/subsonic/transcode/
     curl -sL "https://s3-eu-west-1.amazonaws.com/subsonic-public/download/subsonic-6.1.6-standalone.tar.gz" -o "$HOME/subsonic/subsonic.zip" >> "$log" 2>&1
 
     echo "Extracting Subsonic"
     unzip -d "$HOME/subsonic" "$HOME/subsonic/subsonic.zip" >> "$log" 2>&1
     port=$(port 4096 12000)
-
+    
     echo "Setting up service file"
-
     cat > "$HOME/.config/systemd/user/subsonic.service" << EOF
 [Unit]
 Description=Subsonic Media Server
