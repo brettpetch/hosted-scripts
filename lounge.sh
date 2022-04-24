@@ -58,7 +58,7 @@ function _install() {
     ssl_gen
     ## Function for node install of TheLounge
     echo "Installing The Lounge"
-    npm install -g --unsafe-perm thelounge >> "$log" 2>&1
+    yarn --non-interactive global add thelounge >> "$log" 2>&1
     echo "Configuring The Lounge"
     mkdir -p /home/${user}/.thelounge/
     port=($(port 10000 12000))
@@ -385,6 +385,7 @@ function _remove() {
     systemctl --user stop -q lounge
 
     npm uninstall -g thelounge --save >> /dev/null 2>&1
+    yarn --non-interactive global remove thelounge
 
     rm -rf /home/${user}/.thelounge # just in case
 
@@ -396,7 +397,8 @@ function upgrade() {
     echo "Upgrading The Lounge"
     echo "Stopping lounge.service"
     systemctl --user -q stop lounge
-    npm install -g --unsafe-perm thelounge >> "$log" 2>&1
+    npm remove -g thelounge
+    yarn --non-interactive global add thelounge 
     echo "Starting lounge.service"
     systemctl --user -q start lounge
     echo "The Lounge has been Upgraded."

@@ -14,7 +14,7 @@ mkdir -p /home/${username}/.config/venv/
 python3 -m venv ${venv}
 
 ## Ensure pip is updated to fix rust error
-/opt/guest-ftp/bin/pip install --upgrade pip
+${venv}/bin/pip install --upgrade pip
 
 # Install pyftpdlib and deps
 

@@ -21,14 +21,18 @@ function port() {
 function _install() {
     ssl_port=$(port 14000 16000)
     port=$(port 10000 14000)
+    domain=$(hostname -f)
 
     # Download App
+    echo "Downloading Prowlarr"
+    
     curl -sL "http://prowlarr.servarr.com/v1/update/develop/updatefile?os=linux&runtime=netcore&arch=x64" -o /tmp/prowlarr.tar.gz >> "$log" 2>&1 || {
         echo "Download failed."
         exit 1
     }
 
     # Extract
+    echo "Extracting Prowlarr"
     tar xfv "/tmp/prowlarr.tar.gz" --directory /home/${user}/ >> "$log" 2>&1 || {
         echo_error "Failed to extract"
         exit 1
@@ -40,6 +44,7 @@ function _install() {
     fi
 
     # Service File
+    echo "Writing service file"
     cat > "/home/$user/.config/systemd/user/prowlarr.service" << EOF
 [Unit]
 Description=Prowlarr Daemon
@@ -73,12 +78,29 @@ EOF
 PROWLARR
 
     # Enable/Start Prowlarr
+    echo "Starting Prowlarr"
     systemctl enable --now --user prowlarr.service
+    echo "Prowlarr will be accessible at http://${domain}:${port}"
+
+    echo "Waiting for Prowlarr to start"
+    sleep 45
+    apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" "/home/${user}/.config/prowlarr/config.xml")
+    echo "${apikey}"
+    if ! timeout 5 bash -c -- "while ! curl -sfkL \"http://127.0.0.1:${port}/api/v1/system/status?apiKey=${apikey}\" >> \"$log\" 2>&1; do sleep 5; done"; then
+        echo "Prowlarr API not respond as expected. Please make sure Prowlarr is running."
+        exit 1
+    fi
+    read -rep "Please set a password for your prowlarr user ${user}> " -i "" password
+    echo "Applying authentication"
+    payload=$(curl -skL "http://127.0.0.1:${port}/api/v1/config/host?apikey=${apikey}" | jq ".authenticationMethod = \"forms\" | .username = \"${user}\" | .password = \"${password}\"")
+    curl -sk "http://127.0.0.1:${port}/api/v1/config/host?apikey=${apikey}" -X PUT -H 'Accept: application/json, text/javascript, */*; q=0.01' --compressed -H 'Content-Type: application/json' --data-raw "${payload}" >> "$log"
+    sleep 15
+    echo "Restarting prowlarr"
+    systemctl restart --user prowlarr
     
-    domain=$(hostname -f)
 
     echo "Prowlarr has been installed. You can access it at http://${domain}:${port}"
-    echo "Remember to setup authentication. This is publicly accessible and will contain your API keys and stuff."
+    echo "Remember to check your authentication. This is publicly accessible and will contain your API keys and stuff."
 }
 
 function _remove() {

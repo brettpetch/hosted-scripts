@@ -51,6 +51,7 @@ function _install() {
     cat > "/home/${user}/.config/unpackerr/unpackerr.conf" << EOF
 debug = false
 quiet = false
+log_file = "/home/${user}/.config/unpackerr/unpackerr.log"
 log_files = 1
 log_file_mb = 10
 interval = "2m"

@@ -7,7 +7,15 @@ log="/home/${user}/.logs/race-ready.log"
 port=$(grep 'WebUI\\Port' /home/${user}/.config/qBittorrent/qBittorrent.conf | cut -d= -f2)
 subnet=$(cat /home/${user}/.install/subnet.lock)
 
-function _deps() {
+function github_latest_version() {
+    # Function by Liara
+    # Argument expects the author/repo format
+    # e.g. swizzin/swizzin
+    repo=$1
+    curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/${repo}/releases/latest | grep -o '[^/]*$'
+}
+
+function _nvm() {
     ## Function for installing nvm.
     if [[ ! -d /home/$user/.nvm ]]; then
         echo "Installing node"
@@ -29,16 +37,14 @@ function qbit_race() {
     _nvm
     . /home/${user}/.bashrc
     echo "Installing qbit-race"
-    mkdir -p "/home/${user}/scripts"
     RACE_DIR="/home/${user}/scripts/qbit-race"
-    if [[ -d "${RACE_DIR}" ]]; then
-        echo "qbit-race has already been cloned." 
-    else
-        git clone https://github.com/ckcr4lyf/qbit-race.git "${RACE_DIR}" >> "$log" 2>&1 || {
-            echo "Failed to clone qbit-race."
-            exit 1
-        }
-    fi
+    mkdir -p "${RACE_DIR}"
+
+    version=$(github_latest_version ckcr4lyf/qbit-race)
+    curl -sL "https://github.com/ckcr4lyf/qbit-race/archive/refs/tags/${version}.tar.gz" -o /tmp/qbit-race.tar.gz
+    tar xvf "/tmp/qbit-race.tar.gz" --directory "${RACE_DIR}" --strip-components=1 >> "$log" 2>&1
+    rm -f /tmp/qbit-race.tar.gz
+   
     cp "${RACE_DIR}/sample.env" "${RACE_DIR}/.env"
     sed -i "s|QBIT_HOST=127.0.0.1|QBIT_HOST=${subnet}|g" "${RACE_DIR}/.env"
     sed -i "s|QBIT_PORT=8080|QBIT_PORT=${port}|g" "${RACE_DIR}/.env"
