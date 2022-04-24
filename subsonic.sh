@@ -30,8 +30,8 @@ function _install() {
     echo "Downloading subsonic"
     mkdir -p "$HOME/.config/subsonic"
     mkdir -p "$HOME/subsonic"
-    mkdir -p $HOME/subsonic/transcode/
-    ln -s $(which ffmpeg) $HOME/subsonic/transcode/
+    mkdir -p "$HOME/subsonic/transcode/"
+    ln -s "$(which ffmpeg)" "$HOME/subsonic/transcode/"
     curl -sL "https://s3-eu-west-1.amazonaws.com/subsonic-public/download/subsonic-6.1.6-standalone.tar.gz" -o "$HOME/subsonic/subsonic.zip" >> "$log" 2>&1
 
     echo "Extracting Subsonic"
