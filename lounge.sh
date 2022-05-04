@@ -367,7 +367,7 @@ EOSD
 
 function _adduser() {
     read -rep "Please set a password for your The Lounge user, ${user}>  " -i "" password
-    crypt=$(node $HOME/.nvm/versions/node/$(node -v)/lib/node_modules/thelounge/node_modules/bcryptjs/bin/bcrypt "${password}")
+    crypt=$(node $HOME/.config/yarn/global/node_modules/bcryptjs/bin/bcrypt "${password}")
     cat > "$HOME/.thelounge/users/${user}.json" << EOU
 {
 	"password": "${crypt}",
