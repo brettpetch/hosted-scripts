@@ -41,7 +41,7 @@ function ssl_gen() {
 	country="NL"
 	state="Amsterdam"
 	locality="North Holland"
-	organization="seedbox.io"
+	organization="$(hostname -f)"
 	organizationalunit="$user"
 	commonname="$user"
 	ssl_password=""
