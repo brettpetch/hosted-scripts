@@ -339,6 +339,8 @@ module.exports = {
 	},
 };
 EOF
+
+    mkdir -p "$HOME/.thelounge/users/"
     bash -c "thelounge install thelounge-theme-zenburn"
     # Figger out if hostname is Swizzin, LW Swizzin, or SBIO
     echo "thelounge will run on ${port}"
