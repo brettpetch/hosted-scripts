@@ -5,12 +5,12 @@
 
 user=$(whoami)
 
-if [[ ! -d /home/$user/.logs ]]; then
-    mkdir -p /home/${user}/.logs/
+if [[ ! -d $HOME/.logs ]]; then
+    mkdir -p $HOME/.logs
 fi
 
-touch /home/${user}/.logs/prowlarr.log
-log="/home/${user}/.logs/prowlarr.log"
+touch "$HOME/.logs/prowlarr.log"
+log="$HOME/.logs/prowlarr.log"
 
 function port() {
     LOW_BOUND=$1
@@ -33,26 +33,26 @@ function _install() {
 
     # Extract
     echo "Extracting Prowlarr"
-    tar xfv "/tmp/prowlarr.tar.gz" --directory /home/${user}/ >> "$log" 2>&1 || {
+    tar xfv "/tmp/prowlarr.tar.gz" --directory $HOME/ >> "$log" 2>&1 || {
         echo_error "Failed to extract"
         exit 1
     }
     rm -rf /tmp/prowlarr.tar.gz
 
-    if [[ ! -d /home/$user/.config/systemd/user/ ]]; then
-        mkdir -p /home/$user/.config/systemd/user/
+    if [[ ! -d $HOME/.config/systemd/user/ ]]; then
+        mkdir -p $HOME/.config/systemd/user/
     fi
 
     # Service File
     echo "Writing service file"
-    cat > "/home/$user/.config/systemd/user/prowlarr.service" << EOF
+    cat > "$HOME/.config/systemd/user/prowlarr.service" << EOF
 [Unit]
 Description=Prowlarr Daemon
 After=syslog.target network.target
 
 [Service]
 Type=simple
-ExecStart=/home/$user/Prowlarr/Prowlarr -nobrowser -data=/home/$user/.config/prowlarr/
+ExecStart=$HOME/Prowlarr/Prowlarr -nobrowser -data=$HOME/.config/prowlarr/
 TimeoutStopSec=20
 KillMode=process
 Restart=on-failure
@@ -60,8 +60,8 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 EOF
-    mkdir -p /home/$user/.config/prowlarr/
-    cat > /home/$user/.config/prowlarr/config.xml << PROWLARR
+    mkdir -p $HOME/.config/prowlarr/
+    cat > $HOME/.config/prowlarr/config.xml << PROWLARR
 <Config>
   <LogLevel>debug</LogLevel>
   <UpdateMechanism>BuiltIn</UpdateMechanism>
@@ -84,7 +84,7 @@ PROWLARR
 
     echo "Waiting for Prowlarr to start"
     sleep 45
-    apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" "/home/${user}/.config/prowlarr/config.xml")
+    apikey=$(grep -oPm1 "(?<=<ApiKey>)[^<]+" "$HOME/.config/prowlarr/config.xml")
     echo "${apikey}"
     if ! timeout 5 bash -c -- "while ! curl -sfkL \"http://127.0.0.1:${port}/api/v1/system/status?apiKey=${apikey}\" >> \"$log\" 2>&1; do sleep 5; done"; then
         echo "Prowlarr API not respond as expected. Please make sure Prowlarr is running."
@@ -105,8 +105,8 @@ PROWLARR
 
 function _remove() {
     systemctl disable --now --user prowlarr
-    rm -rf ~/.config/prowlarr/
-    rm -rf ~/Prowlarr/
+    rm -rf "$HOME/.config/prowlarr/"
+    rm -rf "$HOME/Prowlarr/"
     echo "Prowlarr has been removed."
 }
 
