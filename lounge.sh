@@ -1,13 +1,13 @@
 #!/bin/bash
 ## Brett 2021
 user=$(whoami)
-mkdir -p ~/.logs/
-touch ~/.logs/lounge.log
+mkdir -p $HOME/.logs/
+touch "$HOME/.logs/lounge.log"
 log="$HOME/.logs/lounge.log"
 
 function _deps() {
     ## Function for installing nvm.
-    if [[ ! -d /home/$user/.nvm ]]; then
+    if [[ ! -d $HOME/.nvm ]]; then
         echo "Installing node"
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
         echo "nvm installed."
@@ -46,11 +46,11 @@ function ssl_gen() {
 	commonname="$user"
 	ssl_password=""
 	mkdir -p "/home/$user/.ssl/"
-	openssl genrsa -out "/home/$user/.ssl/$user-self-signed.key" 2048 >> /dev/null 2>&1
-	openssl req -new -key /home/$user/.ssl/$user-self-signed.key -out /home/$user/.ssl/$user-self-signed.csr -passin pass:$ssl_password -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname" >> /dev/null 2>&1
-	openssl x509 -req -days 1095 -in "/home/$user/.ssl/$user-self-signed.csr" -signkey "/home/$user/.ssl/$user-self-signed.key" -out "/home/$user/.ssl/$user-self-signed.crt" >> /dev/null 2>&1
-	chown -R "$user": "/home/$user/.ssl"
-	chmod 750 "/home/$user/.ssl"
+	openssl genrsa -out "$HOME/.ssl/$user-self-signed.key" 2048 >> /dev/null 2>&1
+	openssl req -new -key "$HOME/.ssl/$user-self-signed.key" -out "$HOME/.ssl/$user-self-signed.csr" -passin pass:$ssl_password -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname" >> /dev/null 2>&1
+	openssl x509 -req -days 1095 -in "$HOME/.ssl/$user-self-signed.csr" -signkey "$HOME/.ssl/$user-self-signed.key" -out "$HOME/.ssl/$user-self-signed.crt" >> /dev/null 2>&1
+	chown -R "$user": "$HOME/.ssl"
+	chmod 750 "$HOME/.ssl"
 	echo "SSL Key Generated"
 }
 
@@ -60,9 +60,9 @@ function _install() {
     echo "Installing The Lounge"
     yarn --non-interactive global add thelounge >> "$log" 2>&1
     echo "Configuring The Lounge"
-    mkdir -p /home/${user}/.thelounge/
+    mkdir -p "$HOME/.thelounge/"
     port=($(port 10000 12000))
-    cat > /home/${user}/.thelounge/config.js << EOF
+    cat > "$HOME/.thelounge/config.js" << EOF
 "use strict";
 module.exports = {
 	//
@@ -346,15 +346,15 @@ EOF
 }
 function _systemd() {
     ## Function responsible for everything systemd
-    mkdir -p /home/${user}/.config/systemd/user/
-    cat > /home/${user}/.config/systemd/user/lounge.service << EOSD
+    mkdir -p "$HOME/.config/systemd/user"
+    cat > "$HOME/.config/systemd/user/lounge.service" << EOSD
 [Unit]
 Description=The Lounge IRC client
 After=znc.service
 [Service]
 Type=simple
 Environment=NODE_VERSION=$(node -v | cut -d "v" -f 2 | cut -d "." -f 1)
-ExecStart=/home/${user}/.nvm/nvm-exec thelounge start 
+ExecStart=$HOME/.nvm/nvm-exec thelounge start 
 Restart=on-failure
 RestartSec=5
 StartLimitInterval=60s
@@ -367,8 +367,8 @@ EOSD
 
 function _adduser() {
     read -rep "Please set a password for your The Lounge user, ${user}>  " -i "" password
-    crypt=$(node /home/${user}/.nvm/versions/node/$(node -v)/lib/node_modules/thelounge/node_modules/bcryptjs/bin/bcrypt "${password}")
-    cat > /home/${user}/.thelounge/users/${user}.json << EOU
+    crypt=$(node $HOME/.nvm/versions/node/$(node -v)/lib/node_modules/thelounge/node_modules/bcryptjs/bin/bcrypt "${password}")
+    cat > "$HOME/.thelounge/users/${user}.json" << EOU
 {
 	"password": "${crypt}",
 	"log": true,
@@ -387,10 +387,10 @@ function _remove() {
     npm uninstall -g thelounge --save >> /dev/null 2>&1
     yarn --non-interactive global remove thelounge
 
-    rm -rf /home/${user}/.thelounge # just in case
+    rm -rf "$HOME/.thelounge" # just in case
 
-    rm -f /home/${user}/.config/systemd/user/lounge.service
-    rm -f /home/${user}/install/.lounge.lock
+    rm -f "$HOME/.config/systemd/user/lounge.service"
+    rm -f "$HOME/install/.lounge.lock"
 }
 
 function upgrade() {
