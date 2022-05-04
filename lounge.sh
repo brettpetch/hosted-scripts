@@ -356,7 +356,7 @@ After=znc.service
 [Service]
 Type=simple
 Environment=NODE_VERSION=$(node -v | cut -d "v" -f 2 | cut -d "." -f 1)
-ExecStart=$HOME/.yarn/thelounge
+ExecStart=$HOME/.yarn/bin/thelounge
 Restart=on-failure
 RestartSec=5
 StartLimitInterval=60s
