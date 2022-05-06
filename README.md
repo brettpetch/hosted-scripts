@@ -5,6 +5,8 @@ This repo is a helper repo for Swizzin.net & SBIO Seedboxes. Here you will find 
 ## DO NOT RUN THESE SCRIPTS ON DEDICATED SERVERS!
 You should not run these scripts on servers running Swizzin Community Edition. This is meant for seedbox.io apprange and swizzin.net customers. If you DO NOT HAVE root on the server in question, you may consider using these. If you DO HAVE ROOT, please just yell in one of the swizzin support channels until I show up.
 
+This script makes major modifications to how node is installed for some applications. It can break apps that are run in userland that require node. 
+
 ## Install
 If you actually want all this stuff, you can grab the repository by doing 
 
