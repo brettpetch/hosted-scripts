@@ -1,9 +1,9 @@
 # Hosted Scripts
 
-This repo is a helper repo for Swizzin.net & SBIO Seedboxes. Here you will find additional scripts for installing frequently requested software that hasn't been baked into the real deal yet. Think of this as a beta of a beta. Some stuff might not work, but it's better than nothing at all. Some apps can have authentication configured by us, some can't. Some have no baseurl support, so we just run it on the port. There are no warranties for these scripts. You get whatever is here with no support guaranteed whatsoever. 
+This repo is a helper repo for Swizzin.net & HostingBy.Design appboxes. Here you will find additional scripts for installing frequently requested software that hasn't been baked into the real deal yet. Think of this as a beta of a beta. Some stuff might not work, but it's better than nothing at all. Some apps can have authentication configured by us, some can't. Some have no baseurl support, so we just run it on the port. There are no warranties for these scripts. You get whatever is here with no support guaranteed whatsoever. 
 
 ## DO NOT RUN THESE SCRIPTS ON DEDICATED SERVERS!
-You should not run these scripts on servers running Swizzin Community Edition. This is meant for seedbox.io apprange and swizzin.net customers. If you DO NOT HAVE root on the server in question, you may consider using these. If you DO HAVE ROOT, please just yell in one of the swizzin support channels until I show up.
+You should not run these scripts on servers running Swizzin Community Edition. This is meant for HostingBy.Design AppRange and Swizzin.net customers. If you DO NOT HAVE root on the server in question, you may consider using these. If you DO HAVE ROOT, please just yell in one of the Swizzin / HostingBy.Design support channels until I show up.
 
 This script makes major modifications to how node is installed for some applications. It can break apps that are run in userland that require node. 
 
@@ -39,8 +39,8 @@ These scripts **come with no support**. If you have questions, feel free to ask 
 
 [Documentation](https://docs.swizzin.net)
 
-### For SBIO Customers: 
+### For HostingBy.Design Customers: 
 
 [Discord](https://discord.gg/wv67teS)
 
-[Documentation](https://docs.seedbox.io)
+[Documentation](https://my.hostingby.design/index.php?rp=/knowledgebase/13/App-slots)
