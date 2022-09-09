@@ -27,7 +27,7 @@ function create_self_ssl() {
         openssl x509 -req -days 1095 -in "/home/$user/.ssl/$user-self-signed.csr" -signkey "/home/$user/.ssl/$user-self-signed.key" -out "/home/$user/.ssl/$user-self-signed.crt" >> /dev/null 2>&1
         chown -R "$user": "/home/$user/.ssl"
         chmod 750 "/home/$user/.ssl"
-        echo_progress_done "Key for $user generated"
+        echo "Key for $user generated"
     fi
 }
 
