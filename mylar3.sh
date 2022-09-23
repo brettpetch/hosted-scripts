@@ -154,8 +154,8 @@ EOF
     echo "Starting Systemd Service"
     systemctl --user -q daemon-reload
     systemctl --user enable -q --now mylar
-    echo "Mylar is now installed. Please be sure to enable authentication prior to setting it up"
-    echo "Mylar is now running at http://$(hostname -f):${http_port}/ -- Enjoy!"
+    echo "Mylar is now installed."
+    echo "You can find it running at http://$(hostname -f):${http_port}/ -- Enjoy!"
 }
 
 function _remove(){
