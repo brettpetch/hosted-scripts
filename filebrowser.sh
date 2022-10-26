@@ -80,6 +80,28 @@ SERVICE
     echo "Filebrowser us up and running at https://$(hostname -f):${app_port_http}/filebrowser"
 }
 
+function _upgrade() {
+    echo "Stopping Filebrowser"
+    systemctl --user stop filebrowser
+    echo "Backing up Filebrowser"
+    mv $HOME/bin/filebrowser $HOME/bin/filebrowser.bak
+    echo "Downloading new release"
+    wget -O "$HOME/filebrowser.tar.gz" "$(curl -sNL https://api.github.com/repos/filebrowser/filebrowser/releases/latest | grep -Po 'ht(.*)linux-amd64(.*)gz')" >> "$log" 2>&1
+    echo "Extracting new release"
+    tar -xvzf "$HOME/filebrowser.tar.gz" --exclude LICENSE --exclude README.md --exclude CHANGELOG.md -C "$HOME/bin" >> "$log" 2>&1
+    rm -f "$HOME/filebrowser.tar.gz" >> "$log" 2>&1
+    chmod 700 "$HOME/bin/filebrowser"
+    if [[ -f $HOME/bin/filebrowser ]]; then
+        rm $HOME/bin/filebrowser.bak
+    else
+        echo "Something went wrong during the upgrade, reverting changes"
+        mv $HOME/bin/filebrowser.bak $HOME/bin/filebrowser
+    fi
+    echo "Restarting Filebrowser"
+    systemctl restart filebrowser
+    echo "Done."
+}
+
 function _remove() {
     systemctl --user stop filebrowser
     systemctl --user disable filebrowser
@@ -93,6 +115,7 @@ echo ""
 echo "What do you like to do?"
 echo "Logs are stored at ${log}"
 echo "install = Install Filebrowser"
+echo "upgrade = Upgrades Filebrowser"
 echo "uninstall = Completely removes Filebrowser"
 echo "exit = Exits Installer"
 while true; do
@@ -100,6 +123,10 @@ while true; do
     case $choice in
         "install")
             _install
+            break
+            ;;
+        "upgrade")
+            _upgrade
             break
             ;;
         "uninstall")
