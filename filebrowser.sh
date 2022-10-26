@@ -1,19 +1,21 @@
 #!/bin/bash
 # Thx liara, userdocs 
 username=$(whoami)
-mkdir -p "/home/${username}/.logs/"
-export log="/home/${username}/.logs/filebrowser.log"
+mkdir -p "$HOME/.logs/"
+export log="$HOME/.logs/filebrowser.log"
 touch "$log"
+
 function _port() {
     LOW_BOUND=$1
     UPPER_BOUND=$2
     comm -23 <(seq "${LOW_BOUND}" "${UPPER_BOUND}" | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
+
 function create_self_ssl() {
     user=$1
-    if [[ ! -f /home/$user/.ssl/$user-self-signed.key ]]; then
+    if [[ ! -f $HOME/.ssl/$user-self-signed.key ]]; then
         echo "Generating self-signed key for $user"
-        mkdir -p "/home/$user/.ssl"
+        mkdir -p "$HOME/.ssl"
         country=US
         state=California
         locality="San Fransisco"
@@ -22,57 +24,94 @@ function create_self_ssl() {
         commonname=$user
         ssl_password=""
 
-        openssl genrsa -out "/home/$user/.ssl/$user-self-signed.key" 2048 >> /dev/null 2>&1
-        openssl req -new -key "/home/$user/.ssl/$user-self-signed.key" -out "/home/$user/.ssl/$user-self-signed.csr" -passin pass:"$ssl_password" -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname" >> /dev/null 2>&1
-        openssl x509 -req -days 1095 -in "/home/$user/.ssl/$user-self-signed.csr" -signkey "/home/$user/.ssl/$user-self-signed.key" -out "/home/$user/.ssl/$user-self-signed.crt" >> /dev/null 2>&1
-        chown -R "$user": "/home/$user/.ssl"
-        chmod 750 "/home/$user/.ssl"
+        openssl genrsa -out "$HOME/.ssl/$user-self-signed.key" 2048 >> /dev/null 2>&1
+        openssl req -new -key "$HOME/.ssl/$user-self-signed.key" -out "$HOME/.ssl/$user-self-signed.csr" -passin pass:"$ssl_password" -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname" >> /dev/null 2>&1
+        openssl x509 -req -days 1095 -in "$HOME/.ssl/$user-self-signed.csr" -signkey "$HOME/.ssl/$user-self-signed.key" -out "$HOME/.ssl/$user-self-signed.crt" >> /dev/null 2>&1
+        chown -R "$user": "$HOME/.ssl"
+        chmod 750 "$HOME/.ssl"
         echo "Key for $user generated"
     fi
 }
+function _install() {
+    read -rep "Please set a password for filebrowser: " -i "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c10)" password
 
-read -rep "Please set a password for filebrowser: " -i "$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c10)" password
+    app_port_http=$(_port 10001 20000)
 
-app_port_http=$(_port 10001 20000)
+    mkdir -p "$HOME/bin"
+    mkdir -p "$HOME/.config/Filebrowser"
 
-mkdir -p "/home/${username}/bin"
-mkdir -p "/home/${username}/.config/Filebrowser"
+    wget -O "$HOME/filebrowser.tar.gz" "$(curl -sNL https://api.github.com/repos/filebrowser/filebrowser/releases/latest | grep -Po 'ht(.*)linux-amd64(.*)gz')" >> "$log" 2>&1
+    tar -xvzf "$HOME/filebrowser.tar.gz" --exclude LICENSE --exclude README.md --exclude CHANGELOG.md -C "$HOME/bin" >> "$log" 2>&1
 
-wget -O "/home/${username}/filebrowser.tar.gz" "$(curl -sNL https://api.github.com/repos/filebrowser/filebrowser/releases/latest | grep -Po 'ht(.*)linux-amd64(.*)gz')" >> "$log" 2>&1
-tar -xvzf "/home/${username}/filebrowser.tar.gz" --exclude LICENSE --exclude README.md --exclude CHANGELOG.md -C "/home/${username}/bin" >> "$log" 2>&1
+    rm -f "$HOME/filebrowser.tar.gz" >> "$log" 2>&1
+    echo "Initialising database and configuring Filebrowser"
+    create_self_ssl "${username}"
 
-rm -f "/home/${username}/filebrowser.tar.gz" >> "$log" 2>&1
-echo "Initialising database and configuring Filebrowser"
-create_self_ssl "${username}"
+    "$HOME/bin/filebrowser" config init -d "$HOME/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
 
-"/home/${username}/bin/filebrowser" config init -d "/home/${username}/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
+    "$HOME/bin/filebrowser" config set -t "$HOME/.ssl/${username}-self-signed.crt" -k "$HOME/.ssl/${username}-self-signed.key" -d "$HOME/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
+    "$HOME/bin/filebrowser" config set -a 0.0.0.0 -p "${app_port_http}" -l "$HOME/.config/Filebrowser/filebrowser.log" -d "$HOME/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
+    "$HOME/bin/filebrowser" users add "${username}" "${password}" --perm.admin -d "$HOME/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
 
-"/home/${username}/bin/filebrowser" config set -t "/home/${username}/.ssl/${username}-self-signed.crt" -k "/home/${username}/.ssl/${username}-self-signed.key" -d "/home/${username}/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
-"/home/${username}/bin/filebrowser" config set -a 0.0.0.0 -p "${app_port_http}" -l "/home/${username}/.config/Filebrowser/filebrowser.log" -d "/home/${username}/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
-"/home/${username}/bin/filebrowser" users add "${username}" "${password}" --perm.admin -d "/home/${username}/.config/Filebrowser/filebrowser.db" >> "$log" 2>&1
-
-chown "${username}.${username}" -R "/home/${username}/bin" > /dev/null 2>&1
-chown "${username}.${username}" -R "/home/${username}/.config" > /dev/null 2>&1
-chmod 700 "/home/${username}/bin/filebrowser" > /dev/null 2>&1
-mkdir -p "/home/$username/.config/systemd/user"
-cat > "/home/$username/.config/systemd/user/filebrowser.service" <<- SERVICE
-	[Unit]
-	Description=filebrowser
-	After=network.target
-	[Service]
-	UMask=002
-	Type=simple
-	WorkingDirectory=/home/${username}
-	ExecStart=/home/${username}/bin/filebrowser -d /home/${username}/.config/Filebrowser/filebrowser.db
-	TimeoutStopSec=20
-	KillMode=process
-	Restart=always
-	RestartSec=2
-	[Install]
-	WantedBy=multi-user.target
+    chown "${username}.${username}" -R "$HOME/bin" > /dev/null 2>&1
+    chown "${username}.${username}" -R "$HOME/.config" > /dev/null 2>&1
+    chmod 700 "$HOME/bin/filebrowser" > /dev/null 2>&1
+    mkdir -p "$HOME/.config/systemd/user"
+    cat > "$HOME/.config/systemd/user/filebrowser.service" <<- SERVICE
+[Unit]
+Description=filebrowser
+After=network.target
+[Service]
+UMask=002
+Type=simple
+WorkingDirectory=$HOME
+ExecStart=$HOME/bin/filebrowser -d $HOME/.config/Filebrowser/filebrowser.db
+TimeoutStopSec=20
+KillMode=process
+Restart=always
+RestartSec=2
+[Install]
+WantedBy=multi-user.target
 SERVICE
 
-systemctl --user enable --now filebrowser
-echo "Systemd service installed"
-touch "/home/${username}/.install/.filebrowser.lock"
-echo "Filebrowser us up and running at https://$(hostname -f):${app_port_http}/filebrowser"
+    systemctl --user enable --now filebrowser
+    echo "Systemd service installed"
+    touch "$HOME/.install/.filebrowser.lock"
+    echo "Filebrowser us up and running at https://$(hostname -f):${app_port_http}/filebrowser"
+}
+
+function _remove() {
+    systemctl --user stop filebrowser
+    systemctl --user disable filebrowser
+    rm -rf "$HOME/.config/Filebrowser"
+    rm -rf "$HOME/.config/systemd/user/filebrowser.service"
+    rm -f "$HOME/.install/.filebrowser.lock"
+}
+
+echo "Welcome to Filebrowser installer..."
+echo ""
+echo "What do you like to do?"
+echo "Logs are stored at ${log}"
+echo "install = Install Filebrowser"
+echo "uninstall = Completely removes Filebrowser"
+echo "exit = Exits Installer"
+while true; do
+    read -r -p "Enter it here: " choice
+    case $choice in
+        "install")
+            _install
+            break
+            ;;
+        "uninstall")
+            _remove
+            break
+            ;;
+        "exit")
+            break
+            ;;
+        *)
+            echo "Unknown Option."
+            ;;
+    esac
+done
+exit
