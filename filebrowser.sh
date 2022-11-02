@@ -77,7 +77,7 @@ SERVICE
     systemctl --user enable --now filebrowser
     echo "Systemd service installed"
     touch "$HOME/.install/.filebrowser.lock"
-    echo "Filebrowser us up and running at https://$(hostname -f):${app_port_http}/filebrowser"
+    echo "Filebrowser us up and running at https://$(hostname -f):${app_port_http}/"
 }
 
 function _upgrade() {
