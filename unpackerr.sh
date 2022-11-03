@@ -3,8 +3,8 @@
 # Swizzin/Seedbox.io 2021
 
 user=$(whoami)
-mkdir -p "/home/${user}/.logs/"
-export log="/home/${user}/.logs/unpackerr.log"
+mkdir -p "$HOME/.logs/"
+export log="$HOME/.logs/unpackerr.log"
 touch "$log"
 app="unpackerr"
 
@@ -32,9 +32,9 @@ function _get_latest_release() {
         echo "Failed to extract"
         exit 1
     }
-    mkdir -p "/home/${user}/.local/bin/"
-    mv /tmp/unpackerr "/home/${user}/.local/bin/"
-    chmod +x "/home/${user}/.local/bin/unpackerr"
+    mkdir -p "$HOME/.local/bin/"
+    mv /tmp/unpackerr "$HOME/.local/bin/"
+    chmod +x "$HOME/.local/bin/unpackerr"
     rm -rf /tmp/unpackerr.gz
     echo "Archive Extracted."
 }
@@ -46,12 +46,12 @@ function _install() {
     echo "Latest release installed."
 
     echo "Configuring Unpackerr"
-    subnet=$(cat "/home/${user}/.install/subnet.lock")
-    mkdir -p "/home/${user}/.config/unpackerr"
-    cat > "/home/${user}/.config/unpackerr/unpackerr.conf" << EOF
+    subnet=$(cat "$HOME/.install/subnet.lock")
+    mkdir -p "$HOME/.config/unpackerr"
+    cat > "$HOME/.config/unpackerr/unpackerr.conf" << EOF
 debug = false
 quiet = false
-log_file = "/home/${user}/.config/unpackerr/unpackerr.log"
+log_file = "$HOME/.config/unpackerr/unpackerr.log"
 log_files = 1
 log_file_mb = 10
 interval = "2m"
@@ -62,55 +62,55 @@ file_mode = "0644"
 dir_mode = "0755"
 EOF
     # Add API data to config for installed arrs.
-    if [[ -f /home/${user}/.install/.sonarr.lock ]]; then 
-        sonarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "/home/${user}/.config/Sonarr/config.xml")
-        sonarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "/home/${user}/.config/Sonarr/config.xml")
-        sonarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "/home/${user}/.config/Sonarr/config.xml")
-        echo "[[sonarr]]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  url = \"http://${subnet}:${sonarr_port}/${sonarr_base}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  api_key = \"${sonarr_api}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  paths = [\"/home/${user}/torrents/rtorrent/\",\"/home/${user}/torrents/qbittorrent/\",\"/home/${user}/torrents/deluge/\"]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  protocols = \"torrent\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  timeout = \"10s\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  delete_delay = \"5m\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  delete_orig = false" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+    if [[ -f $HOME/.install/.sonarr.lock ]]; then 
+        sonarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "$HOME/.config/Sonarr/config.xml")
+        sonarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "$HOME/.config/Sonarr/config.xml")
+        sonarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "$HOME/.config/Sonarr/config.xml")
+        echo "[[sonarr]]" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  url = \"http://${subnet}:${sonarr_port}/${sonarr_base}\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  api_key = \"${sonarr_api}\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  paths = [\"$HOME/torrents/rtorrent/\",\"$HOME/torrents/qbittorrent/\",\"$HOME/torrents/deluge/\"]" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  protocols = \"torrent\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  timeout = \"10s\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  delete_delay = \"5m\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  delete_orig = false" >> "$HOME/.config/unpackerr/unpackerr.conf"
     fi
     
-    if [[ -f /home/${user}/.install/.radarr.lock ]]; then
-        radarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "/home/${user}/.config/Radarr/config.xml")
-        radarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "/home/${user}/.config/Radarr/config.xml")
-        radarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "/home/${user}/.config/Radarr/config.xml")
-        echo " [[radarr]]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  url = \"http://${subnet}:${radarr_port}/${radarr_base}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  api_key = \"${radarr_api}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  paths = [\"/home/${user}/torrents/rtorrent/\",\"/home/${user}/torrents/qbittorrent/\",\"/home/${user}/torrents/deluge/\"]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  protocols = \"torrent\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  timeout = \"10s\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  delete_delay = \"5m\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  delete_orig = false" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+    if [[ -f $HOME/.install/.radarr.lock ]]; then
+        radarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "$HOME/.config/Radarr/config.xml")
+        radarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "$HOME/.config/Radarr/config.xml")
+        radarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "/$HOME/.config/Radarr/config.xml")
+        echo " [[radarr]]" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  url = \"http://${subnet}:${radarr_port}/${radarr_base}\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  api_key = \"${radarr_api}\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  paths = [\"$HOME/torrents/rtorrent/\",\"$HOME/torrents/qbittorrent/\",\"$HOME/torrents/deluge/\"]" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  protocols = \"torrent\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  timeout = \"10s\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  delete_delay = \"5m\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  delete_orig = false" >> "$HOME/.config/unpackerr/unpackerr.conf"
     fi
 
-    if [[ -f /home/${user}/.install/.lidarr.lock ]]; then
-        lidarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "/home/${user}/.config/Lidarr/config.xml")
-        lidarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "/home/${user}/.config/Lidarr/config.xml")
-        lidarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "/home/${user}/.config/Lidarr/config.xml")
-        echo " [[lidarr]]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  url = \"http://${subnet}:${lidarr_port}/${lidarr_base}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  api_key = \"${lidarr_api}\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  paths = [\"/home/${user}/torrents/rtorrent/\",\"/home/${user}/torrents/qbittorrent/\",\"/home/${user}/torrents/deluge/\"]" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  protocols = \"torrent\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  timeout = \"10s\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  delete_delay = \"5m\"" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
-        echo "  delete_orig = false" >> "/home/${user}/.config/unpackerr/unpackerr.conf"
+    if [[ -f $HOME/.install/.lidarr.lock ]]; then
+        lidarr_api=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' "$HOME/.config/Lidarr/config.xml")
+        lidarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "$HOME/.config/Lidarr/config.xml")
+        lidarr_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' "$HOME/.config/Lidarr/config.xml")
+        echo " [[lidarr]]" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  url = \"http://${subnet}:${lidarr_port}/${lidarr_base}\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  api_key = \"${lidarr_api}\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  paths = [\"$HOME/torrents/rtorrent/\",\"$HOME/torrents/qbittorrent/\",\"$HOME/torrents/deluge/\"]" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  protocols = \"torrent\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  timeout = \"10s\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  delete_delay = \"5m\"" >> "$HOME/.config/unpackerr/unpackerr.conf"
+        echo "  delete_orig = false" >> "$HOME/.config/unpackerr/unpackerr.conf"
     fi
 
-    mkdir -p "/home/${user}/.config/systemd/user/"
-    cat > "/home/${user}/.config/systemd/user/unpackerr.service" << EOF
+    mkdir -p "$HOME/.config/systemd/user/"
+    cat > "$HOME/.config/systemd/user/unpackerr.service" << EOF
 [Unit]
 Description=unpackerr - Extracts downloads so Radarr, Sonarr, Lidarr or Readarr may import them.
 
 [Service]
-ExecStart=/home/${user}/.local/bin/unpackerr --config /home/${user}/.config/unpackerr/unpackerr.conf
+ExecStart=$HOME/.local/bin/unpackerr --config $HOME/.config/unpackerr/unpackerr.conf
 Restart=always
 RestartSec=10
 SyslogIdentifier=unpackerr
@@ -122,7 +122,7 @@ WantedBy=multi-user.target
 EOF
     echo "Starting the unpackerr service"
     systemctl enable --user --now unpackerr >> "$log" 2>&1
-    touch "/home/${user}/.install/.unpackerr.lock"
+    touch "$HOME/.install/.unpackerr.lock"
     echo "Unpackerr installed."
 }
 
@@ -130,9 +130,9 @@ function _remove() {
     echo "Removing unpackerr."
     systemctl stop --user unpackerr
     systemctl disable --user unpackerr
-    rm -rf "/home/${user}/.config/unpackerr"
-    rm -rf "/home/${user}/.local/bin/unpackerr"
-    rm "/home/${user}/.install/.unpackerr.lock"
+    rm -rf "$HOME/.config/unpackerr"
+    rm -rf "$HOME/.local/bin/unpackerr"
+    rm "$HOME/.install/.unpackerr.lock"
     echo "Unpackerr removed."
 }
 
