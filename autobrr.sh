@@ -1,8 +1,8 @@
 #!/bin/bash
 # Refactored Swizzin version from Ze0s
 user=$(whoami)
-mkdir -p "/home/${user}/.logs/"
-export log="/home/${user}/.logs/autobrr.log"
+mkdir -p "$HOME/.logs/"
+export log="$HOME/.logs/autobrr.log"
 touch "$log"
 
 function port() {
@@ -36,9 +36,9 @@ function autobrr_download_latest() {
     echo "Archive downloaded"
 
     echo "Extracting archive"
-    mkdir -p "/home/${user}/.local/bin/"
+    mkdir -p "$HOME/.local/bin/"
     # the archive contains both autobrr and autobrrctl to easily setup the user
-    tar xfv "/tmp/autobrr.tar.gz" --directory "/home/${user}/.local/bin/" >> "$log" 2>&1 || {
+    tar xfv "/tmp/autobrr.tar.gz" --directory "$HOME/.local/bin/" >> "$log" 2>&1 || {
         echo "Failed to extract"
         exit 1
     }
@@ -53,14 +53,14 @@ _systemd() {
         type=exec
     fi
     echo "Installing Systemd service"
-    mkdir -p "/home/${user}/.config/systemd/user/"
-    cat > "/home/${user}/.config/systemd/user/autobrr.service" << EOF
+    mkdir -p "$HOME/.config/systemd/user/"
+    cat > "$HOME/.config/systemd/user/autobrr.service" << EOF
 [Unit]
 Description=autobrr service
 After=syslog.target network.target
 [Service]
 Type=${type}
-ExecStart=/home/${user}/.local/bin/autobrr --config=/home/${user}/.config/autobrr/
+ExecStart=$HOME/.local/bin/autobrr --config=$HOME/.config/autobrr/
 [Install]
 WantedBy=multi-user.target
 EOF
@@ -72,8 +72,8 @@ function _add_user {
     # generate a sessionSecret
     sessionSecret="$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c16)"
 
-    mkdir -p "/home/$user/.config/autobrr/"
-    cat > "/home/$user/.config/autobrr/config.toml" << CFG
+    mkdir -p "$HOME/.config/autobrr/"
+    cat > "$HOME/.config/autobrr/config.toml" << CFG
 # config.toml
 # Hostname / IP
 #
@@ -97,7 +97,7 @@ port = ${port}
 #
 # Optional
 #
-logPath = "/home/${user}/.config/autobrr/logs/autobrr.log"
+logPath = "$HOME/.config/autobrr/logs/autobrr.log"
 # Log level
 #
 # Default: "DEBUG"
@@ -110,30 +110,30 @@ logLevel = "DEBUG"
 sessionSecret = "${sessionSecret}"
 CFG
     read -rep "Please set a password for your autobrr user ${user}> " password
-    echo "${password}" | "/home/${user}/.local/bin/autobrrctl" --config "/home/$user/.config/autobrr" create-user "$user" || {
+    echo "${password}" | "$HOME/.local/bin/autobrrctl" --config "$HOME/.config/autobrr" create-user "$user" || {
             echo "Failed to execute autobrrctl command"
             exit 1
         }
     systemctl --user enable --now  autobrr 2>&1 | tee -a "${log}"
-    touch "/home/${user}/.install/.autobrr.lock"
+    touch "$HOME/.install/.autobrr.lock"
     echo "autobrr is now installed and running at http://$(hostname -f):${port}/" | tee -a "${log}"
 }
 
 function _remove(){
-    if [[ ! -f /home/${user}/.install/.autobrr.lock ]]; then 
+    if [[ ! -f $HOME/.install/.autobrr.lock ]]; then 
         echo "Autobrr not installed!"
         exit 1
     fi
     systemctl stop --user autobrr
     systemctl disable --user autobrr
-    rm "/home/${user}/.config/systemd/user/autobrr.service"
-    rm -rf "/home/${user}/.config/autobrr"
-    rm /home/${user}/.local/bin/*brr*
-    rm "/home/${user}/.install/.autobrr.lock"
+    rm "$HOME/.config/systemd/user/autobrr.service"
+    rm -rf "$HOME/.config/autobrr"
+    rm $HOME/.local/bin/*brr*
+    rm "$HOME/.install/.autobrr.lock"
 }
 
 function _upgrade {
-    if [[ ! -f /home/${user}/.install/.autobrr.lock ]]; then 
+    if [[ ! -f $HOME/.install/.autobrr.lock ]]; then 
         echo "Autobrr not installed!"
         exit 1
     fi
