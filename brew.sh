@@ -19,7 +19,7 @@ function _install() {
 }
 
 function _remove() {
-    rm $HOME/homebrew
+    rm -rf $HOME/homebrew
 }
 
 echo "Welcome to the Homebrew installer..."
