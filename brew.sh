@@ -7,15 +7,21 @@ export log="$HOME/.logs/homebrew.log"
 touch "$log"
 
 function _install() {
-    git clone https://github.com/Homebrew/brew $HOME/homebrew
-    eval "$($HOME/homebrew/bin/brew shellenv)"
-    brew update --force --quiet
-    brew analytics off
-    chmod -R go-w "$(brew --prefix)/share/zsh"
-    echo "eval \"\$(\$HOME/homebrew/bin/brew shellenv)\"" >> $HOME/.profile
-    echo "Brew installed. Please run 'source \$HOME/.profile' to add the application to your shell environment."
-    echo "Please note that this application will not be supported by any means at any point in time."
-    echo "This includes asking for support in Discord."
+    read -p "This application is unsupported in any way. Your slot will be reset if you ask for assistance. Do you wish to proceed? <y/N> " prompt
+    if [[ $prompt == "y" || $prompt == "Y" || $prompt == "yes" || $prompt == "Yes" ]]; then
+        git clone https://github.com/Homebrew/brew $HOME/homebrew
+        eval "$($HOME/homebrew/bin/brew shellenv)"
+        brew update --force --quiet
+        brew analytics off
+        chmod -R go-w "$(brew --prefix)/share/zsh"
+        echo "eval \"\$(\$HOME/homebrew/bin/brew shellenv)\"" >> $HOME/.profile
+        echo "Brew installed. Please run 'source \$HOME/.profile' to add the application to your shell environment."
+        echo "Please note that this application will not be supported by any means at any point in time."
+        echo "This includes asking for support in Discord."
+    else
+      echo "goodbye"
+      exit 0
+    fi
 }
 
 function _remove() {
