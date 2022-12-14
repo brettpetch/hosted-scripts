@@ -28,8 +28,10 @@ function autobrr_download_latest() {
         echo "Failed to query GitHub for latest version"
         exit 1
     }
-
-    if ! curl "$latest" -L -o "/tmp/autobrr.tar.gz" >> "$log" 2>&1; then
+    
+    mkdir -p "$HOME/.tmp/"
+    
+    if ! curl "$latest" -L -o "$HOME/.tmp/autobrr.tar.gz" >> "$log" 2>&1; then
         echo "Download failed, exiting"
         exit 1
     fi
@@ -38,11 +40,11 @@ function autobrr_download_latest() {
     echo "Extracting archive"
     mkdir -p "$HOME/.local/bin/"
     # the archive contains both autobrr and autobrrctl to easily setup the user
-    tar xfv "/tmp/autobrr.tar.gz" --directory "$HOME/.local/bin/" >> "$log" 2>&1 || {
+    tar xfv "$HOME/.tmp/autobrr.tar.gz" --directory "$HOME/.local/bin/" >> "$log" 2>&1 || {
         echo "Failed to extract"
         exit 1
     }
-    rm -rf "/tmp/autobrr.tar.gz"
+    rm -rf "$HOME/.tmp/autobrr.tar.gz"
     echo "Archive extracted"
 }
 
