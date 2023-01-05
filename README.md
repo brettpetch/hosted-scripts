@@ -39,8 +39,12 @@ These scripts **come with no support**. If you have questions, feel free to ask 
 
 [Documentation](https://docs.swizzin.net)
 
+[Affiliate Link](https://clients.swizzin.net/aff.php?aff=33)
+
 ### For HostingBy.Design Customers: 
 
 [Discord](https://discord.gg/wv67teS)
 
 [Documentation](https://my.hostingby.design/index.php?rp=/knowledgebase/13/App-slots)
+
+[Affiliate Link](https://my.hostingby.design/aff.php?aff=1119)
