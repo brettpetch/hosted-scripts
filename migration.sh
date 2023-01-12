@@ -422,12 +422,9 @@ function migrateRtorrent() {
         return
     fi
     install_stop rtorrent
-    old_home=$(get_ini "$HOME/old/.info.lock" "general" "HOME")
     mv $HOME/.sessions $HOME/.sessions.bak
     cp -r "$HOME/old/.sessions/" "$HOME/.sessions"
-    sed -i "s|${old_home}|${HOME}|g" "$HOME/.sessions/*"
-    sed -i "s|${old_home}|${HOME}|g" "$HOME/.rtorrent.rc"
-    sed -i "s|${old_user}|${USER}|g" "$HOME/.rtorrent.rc"
+    sed -i "s|${old_home}/|${HOME}/|g" "$HOME/.sessions/*"
     sudo box start rtorrent
 }
 
@@ -467,12 +464,10 @@ function migrateTautulli {
     # edit ini
     taut_port=$(get_ini $HOME/plexpy/config.ini General http_port)
     old_home=$(get_ini "$HOME/old/.info.lock" "general" "HOME")
-    old_user=$(get_ini "$HOME/old/.info.lock" "general" "USER")
     subnet=$(cat $HOME/.install/subnet.lock)
     set_ini "$HOME/old/plexpy/config.ini" General http_host $subnet
     set_ini "$HOME/plexpy/config.ini" General http_port $taut_port
-    sed -i "s|$old_home|$HOME|g" "$HOME/old/plexpy/config.ini"
-    sed -i "s|$old_user|$USER|g" "$HOME/old/plexpy/config.ini"
+    sed -i "s|$old_home/|$HOME/|g" "$HOME/old/plexpy/config.ini"
     mv "$HOME/old/plexpy/" "$HOME/plexpy/"
     sudo box start plexpy
 }
