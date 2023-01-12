@@ -213,7 +213,7 @@ function migrateDeluge() {
     chmod +x "$HOME/.tmp/qbt"
     mkdir -p "$HOME/.local/bin"
     mv "$HOME/.tmp/qbt" "$HOME/.local/bin/qbt"
-    oldhome=$(get_ini "$HOME/.info.lock" "general" "HOME")
+    oldhome=$(get_ini "$HOME/old/.info.lock" "general" "HOME")
     sudo box stop qbittorrent
     # Import Deluge torrents to qBit
     # Change dir.
@@ -235,9 +235,9 @@ function migrateEmby() {
     jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)<//BaseUrl>|\2|p' "$HOME/old/.emby/config/config/network.xml").
     jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)<//KnownProxies>|\2|p' "$HOME/old/.emby/config/config/network.xml")
     # Get new ports
-    jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)<//PublicPort>|\2|p' "$HOME/.emby/config/config/network.xml")
-    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)<//BaseUrl>|\2|p' "$HOME/.emby/config/config/network.xml").
-    jellyfin_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)<//KnownProxies>|\2|p' "$HOME/.emby/config/config/network.xml")
+    jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/.emby/config/config/network.xml")
+    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.emby/config/config/network.xml").
+    jellyfin_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/.emby/config/config/network.xml")
     # good ol sed to select the old vals and replace
     sed -i "s|${jellyfin_old_port}|${jellyfin_port}|g" "$HOME/old/.emby/config/config/network.xml"
     sed -i "s|${jellyfin_old_baseurl}|${jellyfin_baseurl}|g" "$HOME/old/.emby/config/config/network.xml"
@@ -271,13 +271,13 @@ function migrateJellyfin() {
     install_stop jellyfin
     install_stop emby
     # Old ports
-    jellyfin_old_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)<//PublicPort>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
-    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)<//BaseUrl>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml").
-    jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)<//KnownProxies>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
+    jellyfin_old_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
+    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml").
+    jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
     # Get new ports
-    jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)<//PublicPort>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
-    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)<//BaseUrl>|\2|p' "$HOME/.jellyfin/config/config/network.xml").
-    jellyfin_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)<//KnownProxies>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
+    jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
+    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.jellyfin/config/config/network.xml").
+    jellyfin_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
     # good ol sed to select the old vals and replace
     sed -i "s|${jellyfin_old_port}|${jellyfin_port}|g" "$HOME/old/.jellyfin/config/config/network.xml"
     sed -i "s|${jellyfin_old_baseurl}|${jellyfin_baseurl}|g" "$HOME/old/.jellyfin/config/config/network.xml"
@@ -299,7 +299,7 @@ function migrateLidarr() {
     old_subnet=$(get_ini $HOME/old/.info.lock general SUBNET)
     subnet=$(cat $HOME/.install/subnet.lock)
     sed -i "s|${old_subnet}|${subnet}|g" "$HOME/old/.config/Lidarr/config.xml"
-    sed -i "s|${old_lidarr_port}|${lidarr_port}" "$HOME/old/.config/Lidarr/config.xml"
+    sed -i "s|${old_lidarr_port}|${lidarr_port}|g" "$HOME/old/.config/Lidarr/config.xml"
     mv "$HOME/.config/Lidarr" "$HOME/.config/Lidarr.bak" 
     mv "$HOME/old/.config/Lidarr/" "$HOME/.config/Lidarr/"
     sudo box start lidarr
@@ -410,7 +410,7 @@ function migrateRadarr() {
     old_subnet=$(get_ini $HOME/old/.info.lock general SUBNET)
     subnet=$(cat $HOME/.install/subnet.lock)
     sed -i "s|${old_subnet}|${subnet}|g" "$HOME/old/.config/Radarr/config.xml"
-    sed -i "s|${old_radarr_port}|${radarr_port}" "$HOME/old/.config/Radarr/config.xml"
+    sed -i "s|${old_radarr_port}|${radarr_port}|g" "$HOME/old/.config/Radarr/config.xml"
     mv "$HOME/.config/Radarr" "$HOME/.config/Radarr.bak" 
     mv "$HOME/old/.config/Radarr/" "$HOME/.config/Radarr/"
     sudo box start radarr
@@ -452,7 +452,7 @@ function migrateSonarr() {
     old_subnet=$(get_ini $HOME/old/.info.lock general SUBNET)
     subnet=$(cat $HOME/.install/subnet.lock)
     sed -i "s|${old_subnet}|${subnet}|g" "$HOME/old/.config/Sonarr/config.xml"
-    sed -i "s|${old_sonarr_port}|${sonarr_port}" "$HOME/old/.config/Sonarr/config.xml"
+    sed -i "s|${old_sonarr_port}|${sonarr_port}|g" "$HOME/old/.config/Sonarr/config.xml"
     mv "$HOME/.config/Sonarr" "$HOME/.config/Sonarr.bak" 
     mv "$HOME/old/.config/Sonarr/" "$HOME/.config/Sonarr/"
     sudo box start sonarr
@@ -551,7 +551,7 @@ function migrateProwlarr() {
     bash "$HOME/scripts/hosted-scripts/prowlarr.sh"
     prowlarr_port=$(new_port 9696 12000)
     old_prowlarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "$HOME/old/.config/Prowlarr/config.xml")
-    sed -i "s|${old_prowlarr_port}|${prowlarr_port}" "$HOME/old/.config/Prowlarr/config.xml"
+    sed -i "s|${old_prowlarr_port}|${prowlarr_port}|g" "$HOME/old/.config/Prowlarr/config.xml"
     mv "$HOME/.config/Prowlarr" "$HOME/.config/Prowlarr.bak" 
     mv "$HOME/old/.config/Prowlarr/" "$HOME/.config/Prowlarr/"
 
@@ -576,7 +576,7 @@ function migrateReadarr() {
     bash "$HOME/scripts/hosted-scripts/readarr.sh"
     readarr_port=$(new_port 9696 12000)
     old_readarr_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' "$HOME/old/.config/Readarr/config.xml")
-    sed -i "s|${old_readarr_port}|${readarr_port}" "$HOME/old/.config/Readarr/config.xml"
+    sed -i "s|${old_readarr_port}|${readarr_port}|g" "$HOME/old/.config/Readarr/config.xml"
     mv "$HOME/.config/Readarr" "$HOME/.config/Readarr.bak" 
     mv "$HOME/old/.config/Readarr/" "$HOME/.config/Readarr/"
     echo "Please secure your instance!"
