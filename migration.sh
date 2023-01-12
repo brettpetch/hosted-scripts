@@ -231,9 +231,9 @@ function migrateEmby() {
     fi
     install_stop emby
     # Old ports
-    jellyfin_old_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)<//PublicPort>|\2|p' "$HOME/old/.emby/config/config/network.xml")
-    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)<//BaseUrl>|\2|p' "$HOME/old/.emby/config/config/network.xml").
-    jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)<//KnownProxies>|\2|p' "$HOME/old/.emby/config/config/network.xml")
+    jellyfin_old_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/old/.emby/config/config/network.xml")
+    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/old/.emby/config/config/network.xml").
+    jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/old/.emby/config/config/network.xml")
     # Get new ports
     jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/.emby/config/config/network.xml")
     jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.emby/config/config/network.xml").
