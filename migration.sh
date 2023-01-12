@@ -4,7 +4,6 @@
 # Only use on shared slots.
 # Licensed under GNU General Public License v3.0
 # Logs stored at $HOME/.logs/migration.log
-
 mkdir -p "$HOME/.logs/"
 export log="$HOME/.logs/migration.log"
 touch "$log"
@@ -119,7 +118,7 @@ EOF
     for i in $HOME/.install/.*.lock; do
         i=$(echo "$i" | cut -d/ -f5 | cut -d. -f2)
         echo "Attempting to stop $i"
-        box stop "${i}" || systemctl --user -q stop "${i}" || systemctl stop -q "${i}@$(whoami)"
+        sudo box stop "${i}" || systemctl --user -q stop "${i}" || sudo systemctl stop -q "${i}@$(whoami)"
         echo "${i}" >> applist.txt
     done
     echo "Copying data from $HOME to ${newhost}:\$HOME/old... This could take some time."
@@ -612,15 +611,6 @@ function migrateUnpackerr() {
     check_scripts
     bash "$HOME/scripts/hosted-scripts/unpackerr.sh"
 }
-
-echo "Your current subnet is $(cat "$HOME/.install/subnet.lock")"
-echo "What would you like to do today?"
-echo "1. Copy"
-echo "2. Attempt a restore from copy"
-echo "3. Exit"
-
-echo "Please enter a list of applications you'd like to restore, seperated by spaces."
-read -r apps
 
 echo "Welcome to the HostingBy Migration Script"
 echo "This script will inventory your current slot and copy the data for you."
