@@ -11,6 +11,12 @@ touch "$HOME/.logs/$app.log"
 log="$HOME/.logs/$app.log"
 
 function _upgrade() {
+
+    if [[ ! -f $HOME/.install/.lidarr.lock ]]; then
+        echo "Lidarr not installed. Exiting"
+        exit 1
+    fi
+    
     echo "Stopping old install"
 
     sudo box disable lidarr
