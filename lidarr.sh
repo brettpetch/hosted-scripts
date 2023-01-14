@@ -15,6 +15,9 @@ function _upgrade() {
 
     sudo box disable lidarr
     sudo box stop lidarr
+    
+    echo "Removing old Lidarr Install"
+    rm -rf "$HOME/Lidarr"
     # Download App
     echo "Downloading Lidarr"
     
