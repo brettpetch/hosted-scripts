@@ -73,7 +73,7 @@ echo "exit = Exits Installer"
 while true; do
     read -r -p "Enter it here: " choice
     case $choice in
-        "install")
+        "upgrade")
             _upgrade
             break
             ;;
