@@ -5,6 +5,18 @@ user=$1
 pw=$2
 dir=$3
 
+echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed'
+if [[ -z ${eula} ]]; then
+    read -r eula
+fi
+
+if ! [[ $eula =~ yes ]]; then
+  echo "You did not accept the above. Exiting..."
+  exit 1
+else
+  echo "Proceeding with installation"
+fi
+
 if [[ -z $1 || -z $2 || -z $3 ]]; then echo "You must define a username, password and path (in that order)!"; exit 1; fi
 
 venv="/home/${username}/.config/venv/guestftp"
