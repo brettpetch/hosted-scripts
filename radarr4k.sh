@@ -81,6 +81,18 @@ function _remove {
     rm "/home/${user}/.install/.radarr4k.lock"
 }
 
+echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed'
+if [[ -z ${eula} ]]; then
+    read -r eula
+fi
+
+if ! [[ $eula =~ yes ]]; then
+  echo "You did not accept the above. Exiting..."
+  exit 1
+else
+  echo "Proceeding with installation"
+fi
+
 echo "Welcome to The Radarr 4K installer..."
 echo ""
 echo "What do you like to do?"
