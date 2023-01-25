@@ -126,6 +126,7 @@ EOF
 }
 
 function runner() {
+    export eula="yes"
     migrateAutoDL
     migrateBazarr
     migrateBTSync
