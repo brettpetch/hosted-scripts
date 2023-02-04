@@ -1,5 +1,5 @@
 #!/bin/bash
-# qbit_manage barebonbes installer
+# qbit_manage barebones installer
 
 export user=$(whoami)
 mkdir -p "$HOME/.logs/"
@@ -77,17 +77,17 @@ function _install() {
     pyenv_create_venv 3.10.9 "$HOME/.venv/qbit_manage"
     mkdir -p "$HOME/scripts"
     echo "Cloning qbit_manage"
-    git clone "https://github.com/StuffAnThings/qbit_manage" "$HOME/scripts/qbit_manage"
+    git clone "https://github.com/StuffAnThings/qbit_manage" "$HOME/scripts/qbit_manage" >> "$log" 2>&1
     echo "Installing qbit_manage requirements"
-    "$HOME/.venv/qbit_manage/bin/pip" install -U pip
-    "$HOME/.venv/qbit_manage/bin/pip" install wheel
-    "$HOME/.venv/qbit_manage/bin/pip3" install -r "$HOME/scripts/qbit_manage/requirements.txt"
+    "$HOME/.venv/qbit_manage/bin/pip" install -U pip >> "$log" 2>&1
+    "$HOME/.venv/qbit_manage/bin/pip" install wheel >> "$log" 2>&1
+    "$HOME/.venv/qbit_manage/bin/pip3" install -r "$HOME/scripts/qbit_manage/requirements.txt" >> "$log" 2>&1
 }
 
 function _upgrade() {
-  git -C "$HOME/scripts/qbit_manage" pull
-  "$HOME/.venv/qbit_manage/bin/pip" install -U pip
-  "$HOME/.venv/qbit_manage/bin/pip3" install -r "$HOME/scripts/qbit_manage/requirements.txt"
+  git -C "$HOME/scripts/qbit_manage" pull >> "$log" 2>&1
+  "$HOME/.venv/qbit_manage/bin/pip" install -U pip >> "$log" 2>&1
+  "$HOME/.venv/qbit_manage/bin/pip3" install -r "$HOME/scripts/qbit_manage/requirements.txt" >> "$log" 2>&1
 }
 
 function _remove() {
