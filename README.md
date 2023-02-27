@@ -45,6 +45,6 @@ These scripts **come with no support**. If you have questions, feel free to ask 
 
 [Discord](https://discord.gg/wv67teS)
 
-[Documentation](https://my.hostingby.design/index.php?rp=/knowledgebase/13/App-slots)
+[Documentation](https://docs.hostingby.design/)
 
 [Affiliate Link](https://my.hostingby.design/aff.php?aff=1119)
