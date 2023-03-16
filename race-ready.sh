@@ -93,9 +93,8 @@ echo ""
 echo "What do you like to do?"
 echo "Logs are stored at ${log}"
 echo "node = Install Node."
-echo "qbitrace = Installs qbit-race + node"
+echo "qbitrace = Installs qbit-race + node (Depreciated/Unsupported)"
 echo "nightwalker = Installs nightwalker"
-echo "brr = Installs qbitrace & nightwalker options."
 echo "exit = Exits Installer"
 while true; do
     read -r -p "Enter it here: " choice
@@ -109,11 +108,6 @@ while true; do
             break
             ;;
         "nightwalker")
-            nightwalker
-            break
-            ;;
-        "brr")
-            qbit_race
             nightwalker
             break
             ;;
