@@ -182,7 +182,7 @@ function migrateBazarr() {
     install_stop bazarr
     set_ini "$HOME/old/Apps/bazarr/data/config/config.ini" "general" "ip" $(cat $HOME/.install/subnet.lock)
     set_ini "$HOME/old/Apps/bazarr/data/config/config.ini" "general" "port" "$(get_ini \"$HOME/Apps/bazarr/data/config/config.ini\" \"general\" \"port\")"
-    mv "$HOME/old/Apps/bazarr/data" "$HOME/Apps/bazarr/data.bak"
+    mv "$HOME/Apps/bazarr/data" "$HOME/Apps/bazarr/data.bak"
     mv "$HOME/old/Apps/bazarr/data" "$HOME/Apps/bazarr/data"
 }
 
@@ -233,11 +233,11 @@ function migrateEmby() {
     install_stop emby
     # Old ports
     jellyfin_old_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/old/.emby/config/config/network.xml")
-    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/old/.emby/config/config/network.xml").
+    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/old/.emby/config/config/network.xml")
     jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/old/.emby/config/config/network.xml")
     # Get new ports
     jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/.emby/config/config/network.xml")
-    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.emby/config/config/network.xml").
+    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.emby/config/config/network.xml")
     jellyfin_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/.emby/config/config/network.xml")
     # good ol sed to select the old vals and replace
     sed -i "s|${jellyfin_old_port}|${jellyfin_port}|g" "$HOME/old/.emby/config/config/network.xml"
@@ -273,11 +273,11 @@ function migrateJellyfin() {
     install_stop emby
     # Old ports
     jellyfin_old_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
-    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml").
+    jellyfin_old_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
     jellyfin_old_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/old/.jellyfin/config/config/network.xml")
     # Get new ports
     jellyfin_port=$(sed -n 's|\(.*\)<PublicPort>\(.*\)</PublicPort>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
-    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.jellyfin/config/config/network.xml").
+    jellyfin_baseurl=$(sed -n 's|\(.*\)<BaseUrl>\(.*\)</BaseUrl>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
     jellyfin_kp=$(sed -n 's|\(.*\)<KnownProxies>\(.*\)</KnownProxies>|\2|p' "$HOME/.jellyfin/config/config/network.xml")
     # good ol sed to select the old vals and replace
     sed -i "s|${jellyfin_old_port}|${jellyfin_port}|g" "$HOME/old/.jellyfin/config/config/network.xml"
