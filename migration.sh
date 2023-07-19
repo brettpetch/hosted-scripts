@@ -126,6 +126,10 @@ EOF
 }
 
 function runner() {
+    if [[ ! -f $HOME/old/.info.lock ]];
+        echo "Old user info couldn’t be retrieved. Please ensure \$HOME/.info.lock was transferred into $HOME/old/.info.lock"
+        exit 1
+    fi
     export eula="yes"
     migrateAutoDL
     migrateBazarr
