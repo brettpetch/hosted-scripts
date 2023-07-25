@@ -1,5 +1,6 @@
 #!/bin/bash
 # Maintainer: Brett Petch
+# Coauthor: zze0s
 # For Swizzin.net / HostingByDesign - NOT EVER for Dedicated Servers.
 # Only use on shared slots.
 # Licensed under GNU General Public License v3.0
