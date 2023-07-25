@@ -234,14 +234,20 @@ function migrateDeluge() {
   install_stop deluge
 
   # TODO handle config changes
-  
+
   oldhome=$(get_ini "$HOME/old/.info.lock" "general" "HOME")
 
   downloadMigraterr
   "$HOME/.local/bin/migraterr" bencode edit --glob "$HOME/old/.config/deluge/state/torrents.fastresume" --replace="${oldhome}/|${HOME}/"
 
-  mv "$HOME/.config/deluge" "$HOME/.config/deluge.bak"
+  mv "$HOME/.config/deluge" "$HOME/.config/deluge.bak/"
   mv "$HOME/old/.config/deluge/" "$HOME/.config/deluge/"
+  
+  # Copy in old configs, doesn't seem like this should matter much...
+  cp "$HOME/.config/deluge.bak/hostlist.conf*" "$HOME/.config/deluge/"
+  cp "$HOME/.config/deluge.bak/core.conf*" "$HOME/.config/deluge/"
+  cp "$HOME/.config/deluge.bak/auth*" "$HOME/.config/deluge/"
+  cp "$HOME/.config/deluge.bak/web.conf" "$HOME/.config/deluge/"
 
   # port=$(jq ".Port" "$HOME/.config/deluge/web.conf")
   # admin_pass=$(jq ".AdminPassword" "$HOME/.config/Jackett/ServerConfig.json.bak")
@@ -711,4 +717,3 @@ while true; do
   esac
 done
 exit
-isbee
