@@ -1,5 +1,5 @@
 #!/bin/bash
-user="$(whomai)"
+user="$(whoami)"
 mkdir -p "$HOME/.logs/"
 touch "$HOME/.logs/ngpost.log"
 log="$HOME/.logs/ngpost.log"
