@@ -17,28 +17,36 @@ function port() {
 	comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
 
-function audiobookshelf_install() {
+function github_latest_version() {
+    # Argument expects the author/repo format
+    # e.g. swizzin/swizzin
+    repo=$1
+    curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/${repo}/releases/latest | grep -o '[^/]*$'
+}
 
-declare -a paths
+function audiobookshelf_install() {
+    declare -a paths
     paths[1]="$BASE_DIR/ffmpeg"
     paths[2]="${HOME}/.config/systemd/user"
     paths[3]="${HOME}/bin"
 	
-	for i in {1..3}; do
+     for i in {1..3}; do
         if [ ! -d "${paths[${i}]}" ]; then
             mkdir -p "${paths[${i}]}"
         fi
     done
 
-	ssl_port=$(port 14000 16000)
+    ssl_port=$(port 14000 16000)
     port=$(port 10000 14000)
     domain=$(hostname -f)
 	
 	echo "Downloading Audiobookshelf..."
 	mkdir -p "${HOME}/tmp/audiobookshelf" && cd "${HOME}/tmp/audiobookshelf"
-	wget -qO audiobookshelf.deb "https://github.com/advplyr/audiobookshelf-ppa/blob/master/audiobookshelf_2.4.3_amd64.deb?raw=true" || {
-        echo "Download failed."
-        exit 1
+	version=$(github_latest_version advplyr/audiobookshelf)
+ 
+	wget -qO audiobookshelf.deb "https://github.com/advplyr/audiobookshelf-ppa/blob/master/audiobookshelf_${version//v/}_amd64.deb?raw=true" || {
+		echo "Download failed."
+		exit 1
 	}
 	
 	ar x audiobookshelf.deb data.tar.xz
@@ -105,7 +113,7 @@ EOF
 	
 }
 
-	function _remove (){
+	function _remove() {
 	echo
     echo "Uninstalling audiobookshelf.."
     if systemctl --user is-enabled --quiet "audiobookshelf.service" || [ -f "${HOME}/.config/systemd/user/audiobookshelf.service" ]; then
@@ -128,10 +136,10 @@ EOF
 	fi
 
 	if ! [[ $eula =~ yes ]]; then
-	echo "You did not accept the above. Exiting..."
-	exit 1
+		echo "You did not accept the above. Exiting..."
+		exit 1
 	else
-	echo "Proceeding with installation"
+		echo "Proceeding with installation"
 	fi
 		
 	echo "Welcome to Audiobookshelf installer..."
