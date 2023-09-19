@@ -2,13 +2,13 @@
 # thx flyingsausages and swizzin team
 # based on the overseerr install script
 export user=$(whoami)
-mkdir -p ~/.logs/
-touch ~/.logs/jellyseerr.log
+mkdir -p $HOME/.logs/
+touch $HOME/.logs/jellyseerr.log
 export log="$HOME/.logs/jellyseerr.log"
 
 function _deps() {
     ## Function for installing nvm.
-    if [[ ! -d /home/$user/.nvm ]]; then
+    if [[ ! -d "$HOME/.nvm" ]]; then
         echo "Installing node"
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
         echo "nvm installed."
@@ -37,8 +37,8 @@ function _jellyseerr_install() {
         echo "Download failed"
         exit 1
     }
-    mkdir -p ~/jellyseerr
-    tar --strip-components=1 -C ~/jellyseerr -xzvf /home/${user}/jellyseerr.tar.gz >> "$log" 2>&1
+    mkdir -p $HOME/jellyseerr
+    tar --strip-components=1 -C $HOME/jellyseerr -xzvf /home/${user}/jellyseerr.tar.gz >> "$log" 2>&1
     rm /home/${user}/jellyseerr.tar.gz
     echo "Code extracted"
 
@@ -46,18 +46,14 @@ function _jellyseerr_install() {
     # export JELLYSEERR_BASEURL='/baseurl'
 
     echo "Installing dependencies via yarn"
-    # Ensure sqlite can build right in case it needs to use python
-    if ! which python >> "$log" 2>&1; then #TODO make this a more specific check as this could interfere with other things possibly
-        npm config set python "$(which python3)"
-    fi
-    yarn install --cwd ~/jellyseerr >> "$log" 2>&1 || {
+    yarn install --cwd $HOME/jellyseerr >> "$log" 2>&1 || {
         echo "Failed to install dependencies"
         exit 1
     }
     echo "Dependencies installed"
 
     echo "Building jellyseerr"
-    yarn --cwd ~/jellyseerr build >> "$log" 2>&1 || {
+    yarn --cwd $HOME/jellyseerr build >> "$log" 2>&1 || {
         echo "Failed to build jellyseerr sqlite"
         exit 1
     }
@@ -75,30 +71,30 @@ function _service() {
     mkdir -p "/home/$user/.install/"
     mkdir -p "/home/$user/.config/jellyseerr/"
     # Adapted from https://aur.archlinux.org/cgit/aur.git/tree/overseerr.service?h=overseerr
-    cat > ~/.config/systemd/user/jellyseerr.service << EOF
+    cat > $HOME/.config/systemd/user/jellyseerr.service << EOF
 [Unit]
 Description=Jellyseerr Service
 Wants=network-online.target
 After=network-online.target
 [Service]
-EnvironmentFile=/home/$user/jellyseerr/env.conf
+EnvironmentFile=%h/jellyseerr/env.conf
 Environment=NODE_ENV=production
 Type=exec
 Restart=on-failure
-WorkingDirectory=/home/$user/jellyseerr
+WorkingDirectory=%h/jellyseerr
 ExecStart=$(which node) dist/index.js
 [Install]
 WantedBy=multi-user.target
 EOF
     port=$(_port 1000 18000)
-    cat > ~/jellyseerr/env.conf << EOF
+    cat > $HOME/jellyseerr/env.conf << EOF
 # specify on which port to listen
 PORT=$port
 EOF
 
     systemctl --user daemon-reload
     systemctl --user enable --now -q jellyseerr
-    touch ~/.install/.jellyseerr.lock
+    touch $HOME/.install/.jellyseerr.lock
     echo "Jellyseerr is up and running on http://$(hostname -f):$port/jellyseerr"
 
 }
@@ -106,10 +102,10 @@ EOF
 function _remove() {
     systemctl --user disable --now jellyseerr
     sleep 2
-    rm -rf ~/jellyseerr
-    rm -rf ~/.config/jellyseerr
-    rm -rf ~/.config/systemd/user/jellyseerr.service
-    rm -rf ~/.install/.jellyseerr.lock
+    rm -rf $HOME/jellyseerr
+    rm -rf $HOME/.config/jellyseerr
+    rm -rf $HOME/.config/systemd/user/jellyseerr.service
+    rm -rf $HOME/.install/.jellyseerr.lock
 }
 
 echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed'
@@ -117,7 +113,7 @@ if [[ -z ${eula} ]]; then
     read -r eula
 fi
 
-if ! [[ $eula =~ yes ]]; then
+if ! [[ $eula =$HOME yes ]]; then
   echo "You did not accept the above. Exiting..."
   exit 1
 else
