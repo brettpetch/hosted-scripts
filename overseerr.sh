@@ -45,10 +45,6 @@ function _overseer_install() {
     # export OVERSEERR_BASEURL='/baseurl'
 
     echo "Installing dependencies via yarn"
-    # Ensure sqlite can build right in case it needs to use python
-    if ! which python >> "$log" 2>&1; then #TODO make this a more specific check as this could interfere with other things possibly
-        npm config set python "$(which python3)"
-    fi
     yarn install --cwd ~/overseerr >> "$log" 2>&1 || {
         echo "Failed to install dependencies"
         exit 1
