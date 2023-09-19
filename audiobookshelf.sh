@@ -12,14 +12,14 @@ touch "$HOME/.logs/audiobookshelf.log"
 log="$HOME/.logs/audiobookshelf.log"
 
 function port() {
-    LOW_BOUND=$1
-    UPPER_BOUND=$2
-    comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
+	LOW_BOUND=$1
+	UPPER_BOUND=$2
+	comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
 
 function audiobookshelf_install() {
 
-	declare -a paths
+declare -a paths
     paths[1]="$BASE_DIR/ffmpeg"
     paths[2]="${HOME}/.config/systemd/user"
     paths[3]="${HOME}/bin"
@@ -121,6 +121,18 @@ EOF
     echo
     echo "Uninstallation Complete."
 	}
+	
+	echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed'
+	if [[ -z ${eula} ]]; then
+		read -r eula
+	fi
+
+	if ! [[ $eula =~ yes ]]; then
+	echo "You did not accept the above. Exiting..."
+	exit 1
+	else
+	echo "Proceeding with installation"
+	fi
 		
 	echo "Welcome to Audiobookshelf installer..."
 	echo "Logs are stored at ${log}"
