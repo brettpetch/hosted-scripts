@@ -113,7 +113,7 @@ if [[ -z ${eula} ]]; then
     read -r eula
 fi
 
-if ! [[ $eula =$HOME yes ]]; then
+if ! [[ $eula =~ yes ]]; then
   echo "You did not accept the above. Exiting..."
   exit 1
 else
