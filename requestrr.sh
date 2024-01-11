@@ -50,10 +50,10 @@ function _get_sonarr_vars() {
     if [[ -f ~/.install/.sonarr.lock ]]; then
         echo "Found Sonarr. Grabbing config."
         # Grab config deets from xml
-        export s_address=$(sed -n 's|\(.*\)<BindAddress>\(.*\)</BindAddress>|\2|p' /home/${user}/.config/Sonarr/config.xml) >> ${log} 2>&1
-        export s_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
-        export s_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
-        export s_key=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
+        export s_address=$(sed -n 's|\(.*\)<BindAddress>\(.*\)</BindAddress>|\2|p' $HOME/.config/Sonarr/config.xml) >> ${log} 2>&1
+        export s_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
+        export s_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
+        export s_key=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
         echo "Grabbed Sonarr config."
     else
         export s_port="8989"
@@ -64,10 +64,10 @@ function _get_radarr_vars() {
     if [[ -f ~/.install/.radarr.lock ]]; then
         echo "Found Radarr. Grabbing config."
         # Grab config deets from xml
-        export r_address=$(sed -n 's|\(.*\)<BindAddress>\(.*\)</BindAddress>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
-        export r_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
-        export r_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
-        export r_key=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' /home/${user}/.config/Radarr/config.xml) >> ${log} 2>&1
+        export r_address=$(sed -n 's|\(.*\)<BindAddress>\(.*\)</BindAddress>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
+        export r_port=$(sed -n 's|\(.*\)<Port>\(.*\)</Port>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
+        export r_base=$(sed -n 's|\(.*\)<UrlBase>\(.*\)</UrlBase>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
+        export r_key=$(sed -n 's|\(.*\)<ApiKey>\(.*\)</ApiKey>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
         echo "Radarr config has been retrieved."
     else
         export r_port="7878"
@@ -77,7 +77,8 @@ function _get_radarr_vars() {
 function _write_configs() {
     _get_radarr_vars
     _get_sonarr_vars
-    cat > ~/Requestrr/SettingsTemplate.json << CFG
+    mkdir -p "$HOME/Requestrr/config/"
+    cat > "$HOME/Requestrr/SettingsTemplate.json" << CFG
 {
   "Authentication": {
     "Username": "",
