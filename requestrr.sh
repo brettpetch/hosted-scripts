@@ -14,23 +14,35 @@ function _os_arch() {
     dpkg --print-architecture
 }
 
+function github_latest_version() {
+    # Argument expects the author/repo format
+    # e.g. swizzin/swizzin
+    repo=$1
+    curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/${repo}/releases/latest | grep -o '[^/]*$'
+}
+
 function _requestrr_download() {
     echo "Downloading source files"
+    version=$(github_latest_version thomst08/requestrr)
     case "$(_os_arch)" in
-        "amd64") dlurl=$(curl -sNL https://api.github.com/repos/darkalfx/requestrr/releases/latest | grep -Po 'ht(.*)linux-x64(.*)zip') >> ${log} 2>&1 ;;
-        "armhf") dlurl=$(curl -sNL https://api.github.com/repos/darkalfx/requestrr/releases/latest | grep -Po 'ht(.*)linux-arm(.*)zip') >> ${log} 2>&1 ;;
-        "arm64") dlurl=$(curl -sNL https://api.github.com/repos/darkalfx/requestrr/releases/latest | grep -Po 'ht(.*)linux-arm64(.*)zip') >> ${log} 2>&1 ;;
+        "amd64") arch=x64 ;;
+        "armhf") arch=arm ;;
+        "arm64") arch=arm64
         *)
             echo "Arch not supported"
             exit 1
             ;;
     esac
-
-    if ! curl "$dlurl" -L -o /tmp/requestrr.zip >> "$log" 2>&1; then
+    
+    dlurl="https://github.com/thomst08/requestrr/releases/download/${version}/requestrr-linux-${arch}.zip"
+    mkdir -p "$HOME/.tmp"
+    
+    if ! curl "$dlurl" -L -o $HOME/.tmp/requestrr.zip >> "$log" 2>&1; then
         echo "Download failed, exiting"
         exit 1
     fi
-    echo "Source downloaded"
+    
+    echo "Requestrr downloaded"
 }
 # shellcheck disable=SC2086
 
@@ -197,8 +209,8 @@ function _install() {
     if [[ ! -f ~/.install/.requestrr.lock ]]; then
         port=$(_port 1000 18000)
         _requestrr_download
-        unzip -q /tmp/requestrr.zip -d ~/ >> ${log} 2>&1
-        rm -rf /tmp/requestrr.zip
+        unzip -q "$HOME/.tmp/requestrr.zip" -d ~/ >> ${log} 2>&1
+        rm -rf "$HOME/.tmp/requestrr.zip"
         mkdir -p ~/Requestrr
         mv ~/requestrr*/* ~/Requestrr
         rm -rf ~/requestrr*/
@@ -212,7 +224,7 @@ function _install() {
         systemctl --user -q enable --now requestrr >> ${log} 2>&1
         touch ~/.install/.requestrr.lock
         echo "Requestrr service installed and enabled"
-        echo "Requestrr is available at http://$(hostname):$port/requestrr ;Secure your installation manually through the web interface."
+        echo "Requestrr is available at http://$(hostname):$port/requestrr; Secure your installation manually through the web interface."
     else
         echo "requestrr is already installed."
     fi
