@@ -88,7 +88,7 @@ function _write_configs() {
     "Discord": {
       "BotToken": "",
       "ClientId": "",
-      "StatusMessage": "!help",
+      "StatusMessage": "/help",
       "TvShowRoles": [],
       "MovieRoles": [],
       "MonitoredChannels": [],
@@ -96,9 +96,9 @@ function _write_configs() {
       "AutomaticallyNotifyRequesters": true,
       "NotificationMode": "PrivateMessages",
       "NotificationChannels": [],
-      "AutomaticallyPurgeCommandMessages": false,
-      "DisplayHelpCommandInDMs": true
-    }
+      "AutomaticallyPurgeCommandMessages": true
+    },
+    "Language": "english"
   },
   "DownloadClients": {
     "Ombi": {
@@ -114,65 +114,76 @@ function _write_configs() {
       "Hostname": "",
       "Port": 5055,
       "ApiKey": "",
-      "DefaultApiUserID": "",
+      "Movies": {
+        "DefaultApiUserID": "",
+        "Categories": []
+      },
+      "TvShows": {
+        "DefaultApiUserID": "",
+        "Categories": []
+      },
       "UseSSL": false,
-      "Version": "1"
+      "Version": "1",
+      "UseMovieIssue": false,
+      "UseTVIssue": false
     },
     "Radarr": {
       "Hostname": "${r_address}",
       "Port": ${r_port},
       "ApiKey": "${r_key}",
       "BaseUrl": "/${r_base}",
-      "MovieProfileId": "1",
-      "MovieRootFolder": "",
-      "MovieMinimumAvailability": "",
-      "MovieTags": [],
-      "AnimeProfileId": "1",
-      "AnimeRootFolder": "",
-      "AnimeMinimumAvailability": "",
-      "AnimeTags": [],
+      "Categories": [
+        {
+          "Id": 0,
+          "Name": "movie",
+          "ProfileId": "1",
+          "RootFolder": "",
+          "MinimumAvailability": "announced",
+          "Tags": []
+        }
+      ],
       "SearchNewRequests": true,
       "MonitorNewRequests": true,
       "UseSSL": false,
-      "Version": "2"
+      "Version": "3"
     },
     "Sonarr": {
       "Hostname": "${s_address}",
       "Port": ${s_port},
       "ApiKey": "${s_key}",
       "BaseUrl": "/${s_base}",
-      "TvProfileId": "1",
-      "TvRootFolder": "",
-      "TvTags": [],
-      "TvLanguageId": "1",
-      "TvUseSeasonFolders": true,
-      "AnimeProfileId": "1",
-      "AnimeRootFolder": "",
-      "AnimeTags": [],
-      "AnimeLanguageId": "1",
-      "AnimeUseSeasonFolders": true,
+      "Categories": [
+        {
+          "Id": 0,
+          "Name": "tv",
+          "ProfileId": "1",
+          "RootFolder": "",
+          "Tags": [],
+          "LanguageId": "1",
+          "UseSeasonFolders": true,
+          "SeriesType": "standard"
+        }
+      ],
       "SearchNewRequests": true,
       "MonitorNewRequests": true,
       "UseSSL": false,
-      "Version": "3"
+      "Version": "4"
     }
   },
   "BotClient": {
-    "Client": "",
-    "CommandPrefix": "!"
+    "Client": ""
   },
   "Movies": {
-    "Client": "Disabled",
-    "Command": "movie"
+    "Client": "Disabled"
   },
   "TvShows": {
     "Client": "Disabled",
-    "Command": "tv",
     "Restrictions": "None"
   },
   "Port": $port,
   "BaseUrl" : "/requestrr",
-  "Version": "1.12.0"
+  "DisableAuthentication": false,
+  "Version": "2.1.1"
 }
 CFG
 
