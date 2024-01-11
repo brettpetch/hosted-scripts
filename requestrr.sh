@@ -1,7 +1,7 @@
 #!/bin/bash
 user=$(whoami)
-mkdir -p ~/.logs/
-touch ~/.logs/requestrr.log
+mkdir -p "$HOME/.logs/"
+touch "$HOME/.logs/requestrr.log"
 log="$HOME/.logs/requestrr.log"
 
 function _port() {
@@ -47,7 +47,7 @@ function _requestrr_download() {
 # shellcheck disable=SC2086
 
 function _get_sonarr_vars() {
-    if [[ -f ~/.install/.sonarr.lock ]]; then
+    if [[ -f $HOME/.install/.sonarr.lock ]]; then
         echo "Found Sonarr. Grabbing config."
         # Grab config deets from xml
         export s_address=$(sed -n 's|\(.*\)<BindAddress>\(.*\)</BindAddress>|\2|p' $HOME/.config/Sonarr/config.xml) >> ${log} 2>&1
@@ -61,7 +61,7 @@ function _get_sonarr_vars() {
 }
 
 function _get_radarr_vars() {
-    if [[ -f ~/.install/.radarr.lock ]]; then
+    if [[ -f $HOME/.install/.radarr.lock ]]; then
         echo "Found Radarr. Grabbing config."
         # Grab config deets from xml
         export r_address=$(sed -n 's|\(.*\)<BindAddress>\(.*\)</BindAddress>|\2|p' $HOME/.config/Radarr/config.xml) >> ${log} 2>&1
@@ -191,7 +191,7 @@ CFG
     echo "Requestrr config applied."
 
     echo "Installing Systemd service"
-    cat > ~/.config/systemd/user/requestrr.service << EOF
+    cat > $HOME/.config/systemd/user/requestrr.service << EOF
 [Unit]
 Description=Requestrr Daemon
 After=syslog.target network.target
@@ -206,7 +206,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 EOF
 
-    cat > ~/Requestrr/appsettings.json << SET
+    cat > $HOME/Requestrr/appsettings.json << SET
 {
   "Logging": {
     "LogLevel": {
@@ -218,14 +218,14 @@ EOF
 SET
 }
 function _install() {
-    if [[ ! -f ~/.install/.requestrr.lock ]]; then
+    if [[ ! -f $HOME/.install/.requestrr.lock ]]; then
         port=$(_port 1000 18000)
         _requestrr_download
-        unzip -q "$HOME/.tmp/requestrr.zip" -d ~/ >> ${log} 2>&1
+        unzip -q "$HOME/.tmp/requestrr.zip" -d $HOME/ >> ${log} 2>&1
         rm -rf "$HOME/.tmp/requestrr.zip"
         mkdir -p "$HOME/Requestrr"
         mv $HOME/requestrr*/* "$HOME/Requestrr"
-        rm -rf ~/requestrr*/
+        rm -rf $HOME/requestrr*/
         echo "archive extracted."
         chmod u+x "$HOME/Requestrr/Requestrr.WebApi"
         find "$HOME/Requestrr" -type d -print -exec chmod 755 {} \; >> ${log} 2>&1
@@ -246,10 +246,10 @@ function _install() {
 function _remove() {
     systemctl --user disable --now requestrr
     sleep 2
-    rm -rf ~/Requestrr
-    rm -rf ~/.config/Requestrr
-    rm -rf ~/.config/systemd/user/requestrr.service
-    rm -rf ~/.install/.requestrr.lock
+    rm -rf $HOME/Requestrr
+    rm -rf $HOME/.config/Requestrr
+    rm -rf $HOME/.config/systemd/user/requestrr.service
+    rm -rf $HOME/.install/.requestrr.lock
 }
 
 echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed'
