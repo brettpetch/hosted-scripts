@@ -223,18 +223,19 @@ function _install() {
         _requestrr_download
         unzip -q "$HOME/.tmp/requestrr.zip" -d ~/ >> ${log} 2>&1
         rm -rf "$HOME/.tmp/requestrr.zip"
-        mkdir -p ~/Requestrr
-        mv ~/requestrr*/* ~/Requestrr
+        mkdir -p "$HOME/Requestrr"
+        mv $HOME/requestrr*/* "$HOME/Requestrr"
         rm -rf ~/requestrr*/
         echo "archive extracted."
-        chmod u+x ~/Requestrr/Requestrr.WebApi
+        chmod u+x "$HOME/Requestrr/Requestrr.WebApi"
+        find "$HOME/Requestrr" -type d -print -exec chmod 755 {} \; >> ${log} 2>&1
         echo "Requestrr permissions set"
-        mkdir -p ~/.config/Requestrr/
-        mkdir -p ~/.config/systemd/user/
+        mkdir -p "$HOME/.config/Requestrr/"
+        mkdir -p "$HOME/.config/systemd/user/"
         echo "Configuring "
         _write_configs
         systemctl --user -q enable --now requestrr >> ${log} 2>&1
-        touch ~/.install/.requestrr.lock
+        touch $HOME/.install/.requestrr.lock
         echo "Requestrr service installed and enabled"
         echo "Requestrr is available at http://$(hostname):$port/requestrr; Secure your installation manually through the web interface."
     else
