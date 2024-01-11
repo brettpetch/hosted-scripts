@@ -27,7 +27,7 @@ function _requestrr_download() {
     case "$(_os_arch)" in
         "amd64") arch=x64 ;;
         "armhf") arch=arm ;;
-        "arm64") arch=arm64
+        "arm64") arch=arm64 ;;
         *)
             echo "Arch not supported"
             exit 1
