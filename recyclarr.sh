@@ -29,7 +29,8 @@ function _download() {
 function _install() {
     _download
     # Create example config
-    $HOME/.local/bin/recyclarr config create
+    "$HOME/.local/bin/recyclarr" config create
+    echo "Recylarr installed. Additional configuration is required. Please see https://recyclarr.dev/wiki/yaml/config-reference/ for additional setup information."
     touch $HOME/.install/.recyclarr.lock
 }
 
