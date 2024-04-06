@@ -33,7 +33,7 @@ Restart=on-failure
 WorkingDirectory=%h
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 SERV
     port=$(port 12000 14000)
 echo "Installing Configuration"

@@ -59,7 +59,7 @@ KillMode=process
 Restart=on-failure
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
     mkdir -p $HOME/.config/Whisparr/
     cat > $HOME/.config/Whisparr/config.xml << WHISPARR

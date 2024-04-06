@@ -83,7 +83,7 @@ Restart=on-failure
 WorkingDirectory=/home/$user/overseerr
 ExecStart=$(which node) dist/index.js
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
     port=$(_port 1000 18000)
     cat > ~/overseerr/env.conf << EOF

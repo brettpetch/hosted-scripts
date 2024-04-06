@@ -59,7 +59,7 @@ ExecStart=$HOME/.local/bin/java -Xmx700m \\
     -jar subsonic-booter-jar-with-dependencies.jar
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 
     echo "Starting the subsonic service"

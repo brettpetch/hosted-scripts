@@ -58,7 +58,7 @@ KillMode=process
 Restart=on-failure
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
     mkdir -p $HOME/.config/readarr/
     cat > $HOME/.config/readarr/config.xml << PROWLARR

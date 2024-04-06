@@ -124,7 +124,7 @@ ExecStart=${venv}/bin/python3 /home/${username}/.config/guest-ftp/ftpserver.py
 WorkingDirectory=/home/${username}/.config/guest-ftp/
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 
 ## Enable and start systemd

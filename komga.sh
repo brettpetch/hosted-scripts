@@ -59,7 +59,7 @@ RestartSec=10
 StandardOutput=null
 StandardError=syslog
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 SERV
 
     echo "Starting service..."
