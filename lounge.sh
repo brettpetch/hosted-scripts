@@ -362,7 +362,7 @@ RestartSec=5
 StartLimitInterval=60s
 StartLimitBurst=3
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOSD
     systemctl --user enable -q --now lounge.service >> "$log" 2>&1 || echo "Failed to start TheLounge, please check logs."
 }

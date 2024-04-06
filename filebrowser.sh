@@ -71,7 +71,7 @@ KillMode=process
 Restart=always
 RestartSec=2
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 SERVICE
 
     systemctl --user enable --now filebrowser

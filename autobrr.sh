@@ -64,7 +64,7 @@ After=syslog.target network.target
 Type=${type}
 ExecStart=$HOME/.local/bin/autobrr --config=$HOME/.config/autobrr/
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
     echo "Service installed"
 }

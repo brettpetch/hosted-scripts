@@ -118,7 +118,7 @@ Type=simple
 WorkingDirectory=/tmp
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
     echo "Starting the unpackerr service"
     systemctl enable --user --now unpackerr >> "$log" 2>&1
