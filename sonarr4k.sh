@@ -117,6 +117,7 @@ while true; do
                 echo "Sonarr 4K is not installed"
                 break
             fi
+            ;;
         "uninstall")
             if [[ ! -f "/home/$user/.install/.sonarr4k.lock" ]]; then
                 echo "Sonarr 4K is not installed."
