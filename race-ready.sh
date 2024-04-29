@@ -19,7 +19,8 @@ function _nvm() {
     ## Function for installing nvm.
     if [[ ! -d /home/$user/.nvm ]]; then
         echo "Installing node"
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
+        nvmVersion=$(github_latest_version "nvm-sh/nvm")
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${nvmVersion}/install.sh | bash >> "$log" 2>&1
         echo "nvm installed."
     else
         echo "nvm is already installed."
