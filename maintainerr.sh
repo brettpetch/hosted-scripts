@@ -147,11 +147,13 @@ EOU
 }
 
 function _remove() {
-    systemctl --user disable --now maintainerr
+    systemctl --user disable --now maintainerr-ui
+    systemctl --user disable --now maintainerr-server
     sleep 2
     rm -rf $HOME/maintainerr
     rm -rf $HOME/.config/maintainerr
-    rm -rf $HOME/.config/systemd/user/maintainerr.service
+    rm -rf $HOME/.config/systemd/user/maintainerr-ui.service
+    rm -rf $HOME/.config/systemd/user/maintainerr-server.service
     rm -rf $HOME/.install/.maintainerr.lock
 }
 
