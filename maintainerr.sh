@@ -157,7 +157,7 @@ function _remove() {
     rm -rf $HOME/.install/.maintainerr.lock
 }
 
-echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed'
+echo 'This is unsupported software. You will not get help with this, please answer `yes` if you understand and wish to proceed. You are responsible for securing your software.'
 if [[ -z ${eula} ]]; then
     read -r eula
 fi
