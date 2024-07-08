@@ -53,6 +53,7 @@ function _jellyseerr_install() {
     echo "Dependencies installed"
 
     echo "Building jellyseerr"
+    sed -i "s/256000, /256000, cpus: 6/" $HOME/jellyseerr/next.config.js
     yarn --cwd $HOME/jellyseerr build >> "$log" 2>&1 || {
         echo "Failed to build jellyseerr sqlite"
         exit 1
