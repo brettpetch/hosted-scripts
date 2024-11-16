@@ -29,8 +29,9 @@ function audiobookshelf_install() {
     paths[1]="$BASE_DIR/ffmpeg"
     paths[2]="${HOME}/.config/systemd/user"
     paths[3]="${HOME}/bin"
+    paths[4]="$BASE_DIR/tmp"
 	
-     for i in {1..3}; do
+     for i in {1..4}; do
         if [ ! -d "${paths[${i}]}" ]; then
             mkdir -p "${paths[${i}]}"
         fi
@@ -85,6 +86,7 @@ Description=Self-hosted audiobook server for managing and playing audiobooks
 Type=simple
 Environment=SOURCE=local
 Environment=PORT=${port}
+Environment=TMPDIR=$BASE_DIR/tmp
 Environment=CONFIG_PATH=$BASE_DIR/config
 Environment=METADATA_PATH=$BASE_DIR/metadata
 Environment=FFMPEG_PATH=$BASE_DIR/ffmpeg/ffmpeg
