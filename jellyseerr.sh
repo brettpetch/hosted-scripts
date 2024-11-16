@@ -17,17 +17,19 @@ function _deps() {
     fi
     export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-    nvm install --lts >> "$log" 2>&1 || {
-        echo "node failed to install"
+    nvm install 20 >> "$log" 2>&1 || {
+        echo "node 20 failed to install"
         exit 1
     }
-    echo "Node LTS installed."
-    echo "Installing Yarn"
-    npm install -g yarn >> "$log" 2>&1 || {
-        echo "Yarn failed to install"
+    echo "Node 20 installed."
+    nvm use 20
+    echo "Installing pnpm"
+    npm install -g pnpm >> "$log" 2>&1 || {
+        echo "pnpm failed to install"
         exit 1
     }
-    echo "Yarn installed."
+    echo "pnpm installed."
+    source "$HOME/.bashrc"
 }
 
 function _jellyseerr_install() {
@@ -45,8 +47,8 @@ function _jellyseerr_install() {
     # Changing baseurl before build
     # export JELLYSEERR_BASEURL='/baseurl'
 
-    echo "Installing dependencies via yarn"
-    yarn install --cwd $HOME/jellyseerr >> "$log" 2>&1 || {
+    echo "Installing dependencies via pnpm"
+    pnpm install --prefix $HOME/jellyseerr >> "$log" 2>&1 || {
         echo "Failed to install dependencies"
         exit 1
     }
@@ -54,7 +56,7 @@ function _jellyseerr_install() {
 
     echo "Building jellyseerr"
     sed -i "s/256000, /256000, cpus: 6/" $HOME/jellyseerr/next.config.js
-    yarn --cwd $HOME/jellyseerr build >> "$log" 2>&1 || {
+    pnpm --prefix $HOME/jellyseerr build >> "$log" 2>&1 || {
         echo "Failed to build jellyseerr sqlite"
         exit 1
     }
