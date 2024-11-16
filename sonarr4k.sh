@@ -9,6 +9,25 @@ function port() {
     UPPER_BOUND=$2
     comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
+
+function _systemd() {
+    cat > /home/${USER}/.config/systemd/user/sonarr4k.service << SERVICE
+[Unit]
+Description=Sonarr4k
+After=syslog.target network.target
+
+[Service]
+Type=simple
+Environment="TMPDIR=%h/.tmp"
+ExecStart=%h/Sonarr/Sonarr -nobrowser -data=%h/.config/Sonarr4k
+WorkingDirectory=%h
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+SERVICE
+
+}
 function _install() {
     if [[ ! -f "/home/$user/.install/.sonarr.lock" ]]; then
         echo "Sonarr is not installed. Exiting..."
@@ -17,22 +36,8 @@ function _install() {
     mkdir -p /home/$user/.config/systemd/user/
     mkdir -p /home/$user/.config/Sonarr4k/
     port=$(port 8000 11000)
-    cat > /home/$user/.config/systemd/user/sonarr4k.service << SERVICE
-[Unit]
-Description=Sonarr4k
-After=syslog.target network.target
-
-[Service]
-Type=simple
-Environment="TMPDIR=%h/.tmp"
-ExecStart=/usr/bin/mono %h/Sonarr/Sonarr.exe -nobrowser -data=%h/.config/Sonarr4k
-WorkingDirectory=%h
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-SERVICE
-
+    _systemd
+    
     cat > /home/$user/.config/Sonarr4k/config.xml << EOF
 <Config>
   <LogLevel>info</LogLevel>
@@ -101,6 +106,17 @@ while true; do
                 _install
             fi
             break
+            ;;
+        "upgrade")
+            if [[ -f "/home/$user/.install/.sonarr4k.lock" ]]; then
+                echo "Upgrading Sonarr 4K systemd"
+                _systemd
+                systemctl --user daemon-reload
+                systemctl --user try-restart sonarr4k
+            else
+                echo "Sonarr 4K is not installed"
+                break
+            fi
             ;;
         "uninstall")
             if [[ ! -f "/home/$user/.install/.sonarr4k.lock" ]]; then

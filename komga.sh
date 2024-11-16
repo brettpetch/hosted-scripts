@@ -10,7 +10,7 @@ function java_install() {
         echo "Java not installed..."
         # Java 8
         echo "Downloading java"
-        curl -sL "https://javadl.oracle.com/webapps/download/AutoDL?BundleId=246255_165374ff4ea84ef0bbd821706e29b123" -o /tmp/jre.tar.gz >> "$log" 2>&1
+        curl -sL "https://download.oracle.com/java/17/archive/jdk-17.0.10_linux-x64_bin.tar.gz" -o /tmp/jre.tar.gz >> "$log" 2>&1
         echo "Extracting java"
         tar -xvf /tmp/jre.tar.gz --strip-components=1 -C "/home/${user}/.local/" >> "$log" 2>&1
         rm /tmp/jre.tar.gz
@@ -59,7 +59,7 @@ RestartSec=10
 StandardOutput=null
 StandardError=syslog
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 SERV
 
     echo "Starting service..."

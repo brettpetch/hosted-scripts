@@ -35,7 +35,7 @@ function _install() {
     curl -sL "https://s3-eu-west-1.amazonaws.com/subsonic-public/download/subsonic-6.1.6-standalone.tar.gz" -o "$HOME/subsonic/subsonic.tar.gz" >> "$log" 2>&1
 
     echo "Extracting Subsonic"
-    tar xvf -C "$HOME/subsonic" "$HOME/subsonic/subsonic.tar.gz" >> "$log" 2>&1
+    tar -xvf "$HOME/subsonic" -C "$HOME/subsonic/subsonic.tar.gz" >> "$log" 2>&1
     port=$(port 4096 12000)
     
     echo "Setting up service file"
@@ -59,7 +59,7 @@ ExecStart=$HOME/.local/bin/java -Xmx700m \\
     -jar subsonic-booter-jar-with-dependencies.jar
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
 
     echo "Starting the subsonic service"

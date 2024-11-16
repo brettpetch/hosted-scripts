@@ -134,7 +134,7 @@ GuessMainPID=no
 Restart=on-failure
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOS
 
     echo "Please enter a password for Mylar user ${user} to use."

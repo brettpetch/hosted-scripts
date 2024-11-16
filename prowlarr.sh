@@ -58,7 +58,7 @@ KillMode=process
 Restart=on-failure
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 EOF
     mkdir -p $HOME/.config/prowlarr/
     cat > $HOME/.config/prowlarr/config.xml << PROWLARR
