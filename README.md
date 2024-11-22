@@ -13,12 +13,12 @@ If you actually want all this stuff, you can grab the repository by doing
 ### The Whole Enchilada
 ```bash
 mkdir -p $HOME/scripts/
-git clone https://github.com/brettpetch/hosted-scripts.git $HOME/scripts/hosted-scripts
+git clone https://github.com/Th3Legend28/hosted-scripts.git $HOME/scripts/hosted-scripts
 ```
 
 ### Just a Slice
 ```bash
-bash <(curl -sL "https://github.com/brettpetch/hosted-scripts/raw/master/scriptname.sh")
+bash <(curl -sL "https://github.com/Th3Legend28/hosted-scripts/raw/master/scriptname.sh")
 ```
 
 ## Updates
