@@ -22,12 +22,13 @@ function _deps() {
         exit 1
     }
     echo "Node LTS installed."
-    echo "Installing Yarn"
-    npm install -g yarn >> "$log" 2>&1 || {
-        echo "Yarn failed to install"
+    echo "Installing pnpm"
+    npm install -g pnpm >> "$log" 2>&1 || {
+        echo "pnpm failed to install"
         exit 1
     }
-    echo "Yarn installed."
+    source "$HOME/.bashrc"
+    echo "pnpm installed."
 }
 
 function _jellyseerr_install() {
@@ -37,7 +38,7 @@ function _jellyseerr_install() {
         echo "Download failed"
         exit 1
     }
-    mkdir -p $HOME/jellyseerr
+    mkdir -p $HOME/jellyseerry
     tar --strip-components=1 -C $HOME/jellyseerr -xzvf /home/${user}/jellyseerr.tar.gz >> "$log" 2>&1
     rm /home/${user}/jellyseerr.tar.gz
     echo "Code extracted"
@@ -45,8 +46,8 @@ function _jellyseerr_install() {
     # Changing baseurl before build
     # export JELLYSEERR_BASEURL='/baseurl'
 
-    echo "Installing dependencies via yarn"
-    yarn install --cwd $HOME/jellyseerr >> "$log" 2>&1 || {
+    echo "Installing dependencies via pnpm"
+    pnpm install --prefix $HOME/jellyseerr >> "$log" 2>&1 || {
         echo "Failed to install dependencies"
         exit 1
     }
@@ -54,7 +55,7 @@ function _jellyseerr_install() {
 
     echo "Building jellyseerr"
     sed -i "s/256000, /256000, cpus: 6/" $HOME/jellyseerr/next.config.js
-    yarn --cwd $HOME/jellyseerr build >> "$log" 2>&1 || {
+    pnpm --prefix $HOME/jellyseerr build >> "$log" 2>&1 || {
         echo "Failed to build jellyseerr sqlite"
         exit 1
     }
