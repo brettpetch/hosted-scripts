@@ -45,7 +45,10 @@ function _jellyseerr_install() {
 
     # Changing baseurl before build
     # export JELLYSEERR_BASEURL='/baseurl'
-
+    
+    # Bypass Node version requirement, build with latest LTS.
+    sed -i 's|engine-strict=true|engine-strict=false|g' $HOME/jellyseerr/.npmrc
+    
     echo "Installing dependencies via pnpm"
     pnpm install --prefix $HOME/jellyseerr >> "$log" 2>&1 || {
         echo "Failed to install dependencies"
@@ -54,7 +57,8 @@ function _jellyseerr_install() {
     echo "Dependencies installed"
 
     echo "Building jellyseerr"
-    sed -i "s/256000, /256000, cpus: 6/" $HOME/jellyseerr/next.config.js
+    # Limit CPU
+    sed -i "s|256000,|256000,\n    cpus: 6,|g" $HOME/jellyseerr/next.config.js
     pnpm --prefix $HOME/jellyseerr build >> "$log" 2>&1 || {
         echo "Failed to build jellyseerr sqlite"
         exit 1
