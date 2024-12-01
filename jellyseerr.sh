@@ -38,7 +38,7 @@ function _jellyseerr_install() {
         echo "Download failed"
         exit 1
     }
-    mkdir -p $HOME/jellyseerr
+    mkdir -p $HOME/jellyseerr/.git
     tar --strip-components=1 -C $HOME/jellyseerr -xzvf /home/${user}/jellyseerr.tar.gz >> "$log" 2>&1
     rm /home/${user}/jellyseerr.tar.gz
     echo "Code extracted"
