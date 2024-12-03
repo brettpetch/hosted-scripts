@@ -6,11 +6,20 @@ mkdir -p $HOME/.logs/
 touch $HOME/.logs/jellyseerr.log
 export log="$HOME/.logs/jellyseerr.log"
 
+function github_latest_version() {
+    # Function by Liara
+    # Argument expects the author/repo format
+    # e.g. swizzin/swizzin
+    repo=$1
+    curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/${repo}/releases/latest | grep -o '[^/]*$'
+}
+
 function _deps() {
     ## Function for installing nvm.
     if [[ ! -d "$HOME/.nvm" ]]; then
         echo "Installing node"
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash >> "$log" 2>&1
+        nvmVersion=$(github_latest_version "nvm-sh/nvm")
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${nvmVersion}/install.sh | bash >> "$log" 2>&1
         echo "nvm installed."
     else
         echo "nvm is already installed."
