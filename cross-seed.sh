@@ -4,6 +4,7 @@
 
 mkdir -p "$HOME/.logs"
 log="$HOME/.logs/cross-seed.log"
+subnet=$(cat "$HOME/.install/subnet.lock")
 
 function github_latest_version() {
     # Function by Liara from the Swizzin Project
@@ -43,23 +44,71 @@ function _install() {
         echo "cross-seed failed to install."
         exit 1
     }
+    echo "cross-seed $(cross-seed -V) installed."
 
     mkdir -p "$HOME/.cross-seed"
     if [[ ! -f "$HOME/.cross-seed/config.js" ]]; then
+        echo "Making config file"
         cross-seed gen-config >>"$log" 2>&1 || {
             echo "cross-seed failed to generate config"
             exit 1
         }
 
-        # bind host to localhost
-        sed -i 's|host: undefined|host: "127.0.0.1"|' "$HOME/.cross-seed/config.js"
-
-        echo "config generated: ~/.cross-seed/config.js"
+        _config
     else
         echo "config exists: ~/.cross-seed/config.js"
     fi
+}
 
-    echo "cross-seed $(cross-seed -V) installed."
+function _config() {
+    configFile="$HOME/.cross-seed/config.js"
+
+    clientArray=()
+    [ -f "$HOME/.install/.deluge.lock" ] && clientArray+=("Deluge")
+    [ -f "$HOME/.install/.qbittorrent.lock" ] && clientArray+=("qBittorrent")
+    [ -f "$HOME/.install/.rtorrent.lock" ] && clientArray+=("rTorrent")
+
+    if [[ ${#clientArray[*]} -ge 2 ]]; then
+        echo "Multiple clients detected. Please choose one to setup paths"
+        for i in "${!clientArray[@]}"; do
+            echo "$i = ${clientArray[$i]}"
+        done
+
+        while true; do
+            read -r -p "Enter it here: " selectedIndex
+            [[ ! $selectedIndex =~ ^[0-9]+$ || -z "${clientArray[$selectedIndex]}" ]] && echo "Invalid option" || break
+        done
+    fi
+
+    case "${clientArray[$selectedIndex]}" in
+        "Deluge")
+            torrentDir="$HOME/.config/deluge/state"
+            savePath=$(grep '"download_location"' "$HOME/.config/deluge/core.conf" | awk -F '"' '{print $4}')
+            ;;
+        "qBittorrent")
+            torrentDir="$HOME/.local/share/qBittorrent/BT_backup"
+            savePath=$(grep 'Downloads\\SavePath=' "$HOME/.config/qBittorrent/qBittorrent.conf" | awk -F '=' '{print $2}')
+            # set the qbittorrentUrl because it can bypass authentication for the subnet
+            webuiPort=$(grep 'WebUI\\Port=' "$HOME/.config/qBittorrent/qBittorrent.conf" | awk -F '=' '{print $2}')
+            sed -i "s|qbittorrentUrl:.*,|qbittorrentUrl: \"http://$subnet:$webuiPort\",|" "$configFile"
+            ;;
+        "rTorrent")
+            torrentDir="$HOME/.sessions"
+            savePath=$(grep "directory.default.set" "$HOME/.rtorrent.rc" | awk '{print $3}')
+            ;;
+    esac
+
+    if [[ -n "${clientArray[$selectedIndex]}" ]]; then
+        mkdir -p "$savePath/cross-seed"
+        sed -i "s|linkDir:.*,|linkDir: \"${savePath%/}/cross-seed\",|" "$configFile"
+        sed -i "s|torrentDir:.*,|torrentDir: \"$torrentDir\",|" "$configFile"
+    fi
+
+    mkdir -p "$HOME/.cross-seed/output"
+    sed -i "s|outputDir:.*,|outputDir: \"$HOME/.cross-seed/output\",|" "$configFile"
+    sed -i 's|host:.*,|host: "127.0.0.1",|' "$configFile"
+
+    echo "config generated: ~/.cross-seed/config.js"
 }
 
 function _upgrade() {
