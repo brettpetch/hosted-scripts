@@ -6,6 +6,13 @@ mkdir -p "$HOME/.logs"
 log="$HOME/.logs/cross-seed.log"
 subnet=$(cat "$HOME/.install/subnet.lock")
 
+function port() {
+    ## Generating a random unused port
+    LOW_BOUND=$1
+    UPPER_BOUND=$2
+    comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
+}
+
 function github_latest_version() {
     # Function by Liara from the Swizzin Project
     # Argument expects the author/repo format
@@ -43,7 +50,7 @@ function _deps() {
     npm config set update-notifier=false fund=false
 
     NODE_VERSION=$(node -v)
-    echo "nodejs ${NODE_VERSION} / npm $(npm -v)"
+    echo "nodejs $NODE_VERSION / npm $(npm -v)"
 }
 
 function _install() {
@@ -71,6 +78,7 @@ function _install() {
 
 function _config() {
     configFile="$HOME/.cross-seed/config.js"
+    daemonPort=$(port 12000 14000)
 
     clientArray=()
     [ -f "$HOME/.install/.deluge.lock" ] && clientArray+=("Deluge")
@@ -116,6 +124,7 @@ function _config() {
     mkdir -p "$HOME/.cross-seed/output"
     sed -i "s|outputDir:.*,|outputDir: \"$HOME/.cross-seed/output\",|" "$configFile"
     sed -i 's|host:.*,|host: "127.0.0.1",|' "$configFile"
+    sed -i "s|port:.*,|port: $daemonPort,|" "$configFile"
 
     echo "config generated: ~/.cross-seed/config.js"
 }
