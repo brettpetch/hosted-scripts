@@ -25,16 +25,25 @@ function _deps() {
     fi
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-    echo "Installing nodejs"
-    nvm install --lts >>"$log" 2>&1 || {
-        echo "nodejs failed to install."
-        exit 1
-    }
+    # try to use existing nodejs
+    if nvm use 22 >>"$log" 2>&1; then
+        echo "Using previous installed nodejs v22"
+    elif nvm use 20 >>"$log" 2>&1; then
+        echo "Using previous installed nodejs v20"
+    else
+        echo "Installing nodejs lts"
+        nvm install --lts >>"$log" 2>&1 || {
+            echo "nodejs failed to install."
+            exit 1
+        }
+    fi
+
+    echo "Upgrading npm"
     nvm install-latest-npm >>"$log"
     npm config set update-notifier=false fund=false
 
     NODE_VERSION=$(node -v)
-    echo "nodejs ${NODE_VERSION} / npm $(npm -v) installed."
+    echo "nodejs ${NODE_VERSION} / npm $(npm -v)"
 }
 
 function _install() {
