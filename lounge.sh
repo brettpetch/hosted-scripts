@@ -113,7 +113,6 @@ module.exports = {
 	// @type     string
 	// @default  "example"
 	//
-	theme: "thelounge-theme-zenburn",
 	//
 	// Prefetch URLs
 	//
