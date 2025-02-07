@@ -23,7 +23,7 @@ function _deps() {
     }
     echo "Node LTS installed."
     echo "Installing pnpm"
-    npm install -g pnpm >> "$log" 2>&1 || {
+    npm install -g pnpm@9.15.5 >> "$log" 2>&1 || {
         echo "pnpm failed to install"
         exit 1
     }
