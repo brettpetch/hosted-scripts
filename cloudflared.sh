@@ -27,6 +27,7 @@ function _install() {
     echo "Downloading cloudflared"
     latest_version=$(github_latest_version cloudflare/cloudflared)
     curl -s -L "https://github.com/cloudflare/cloudflared/releases/download/${latest_version}/cloudflared-linux-amd64" -o "$HOME/.local/bin/cloudflared"
+    chmod +x "$HOME/.local/bin/cloudflared"
 
     read -rep "Please enter your Cloudflare Zero Trust Tunnel Token:" CF_API_TOKEN 
     mkdir -p "$HOME/.config/cloudflared/"
@@ -38,7 +39,7 @@ Description=Cloudflared
 After=network-online.target
 
 [Service]
-ExecStart=$HOME/cloudflared tunnel run --token $CF_API_TOKEN --config $HOME/.config/cloudflared/config.yml
+ExecStart=$HOME/.local/bin/cloudflared tunnel run --token $CF_API_TOKEN
 Restart=on-failure
 RestartSec=10
 
