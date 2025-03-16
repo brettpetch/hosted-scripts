@@ -32,6 +32,7 @@ function _install() {
     read -rep "Please enter your Cloudflare Zero Trust Tunnel Token:" CF_API_TOKEN 
     mkdir -p "$HOME/.config/cloudflared/"
     touch "$HOME/.config/cloudflared/config.yml"
+    mkdir -p "$HOME/.config/systemd/user/"
 
     cat >> "$HOME/.config/systemd/user/cloudflared.service" <<EOF
 [Unit]
