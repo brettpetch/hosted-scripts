@@ -46,6 +46,7 @@ EOF
     echo "You may continue with your configuration at https://one.dash.cloudflare.com/ - you will likely want to set your public hostnames to applications that you want to expose outside of your slot."
     echo "Limited documentation available at https://github.com/brettpetch/hosted-scripts/wiki/Cloudflared"
     echo "Your subnet ip is $(cat $HOME/.install/subnet.lock)"
+    touch "$HOME/.install/.cloudflared.dev.lock"
 }
 
 function _remove() {
@@ -54,6 +55,7 @@ function _remove() {
     rm -rf "$HOME/.config/cloudflared/"
     rm -rf "$HOME/.config/systemd/user/cloudflared.service"
     rm -rf "$HOME/.local/bin/cloudflared"
+    rm -f "$HOME/.install/.cloudflared.dev.lock"
     echo "Cloudflared has been removed. Ensure that you remove your tunnel token at https://one.dash.cloudflare.com/"
 }
 
