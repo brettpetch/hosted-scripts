@@ -73,10 +73,16 @@ EOS
     echo "Writing tailscale alias to bashrc"
     echo "alias tailscale='$HOME/.local/bin/tailscale --socket=$HOME/.tmp/tailscale/tailscaled.sock'" >> "$HOME/.bashrc"
 
+    touch "$HOME/.install/.tailscale.dev.lock"
+
     echo "Tailscale installed. Please run 'source $HOME/.bashrc' via ssh or open a new ssh connection to start using tailscale"
 }
 
 function _upgrade(){
+    if [[ ! -f "$HOME/.install/.tailscale.dev.lock" ]]; then
+        echo 'Tailscale may not be installed. If it is, please run `touch "$HOME/.install/.tailscale.dev.lock"`'
+        exit 1
+    fi
     systemctl --user stop tailscaled
     version=$(github_latest_version "tailscale/tailscale")
     curl -sL "https://pkgs.tailscale.com/stable/tailscale_${version//v}_amd64.tgz" -o "$HOME/.tmp/tailscale.tgz"
@@ -87,10 +93,17 @@ function _upgrade(){
     chmod +x "$HOME/.local/bin/tailscale"
     chmod +x "$HOME/.local/bin/tailscaled"
     rm -rf "$HOME/.tmp/tailscale_${version//v}_amd64/"
+    if [[ ! -f "$HOME/.install/.tailscale.dev.lock" ]]; then
+        touch "$HOME/.install/.tailscale.dev.lock"
+    fi
     systemctl --user restart tailscaled
 }
 
 function _remove(){
+    if [[ ! -f "$HOME/.install/.tailscale.dev.lock" ]]; then
+        echo 'Tailscale may not be installed. If it is, please run `touch "$HOME/.install/.tailscale.dev.lock"` before continuing with your removal.'
+        exit 1
+    fi
     "$HOME/.local/bin/tailscale" --socket="$HOME/.tmp/tailscale/tailscaled.sock" logout
     systemctl --user stop tailscaled
     systemctl --user disable --now tailscaled
