@@ -4,6 +4,13 @@
 mkdir -p "$HOME/.logs/"
 export log="$HOME/.logs/tailscale.log"
 touch "$log"
+export subnet=$(cat $HOME/.subnet.lock)
+
+function port() {
+    LOW_BOUND=$1
+    UPPER_BOUND=$2
+    comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
+}
 
 function github_latest_version() {
     # Argument expects the author/repo format
@@ -11,7 +18,6 @@ function github_latest_version() {
     repo=$1
     curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/${repo}/releases/latest | grep -o '[^/]*$'
 }
-
 
 function _install(){
     version=$(github_latest_version "tailscale/tailscale")
@@ -39,6 +45,8 @@ EOE
 
     mkdir -p "$HOME/.config/systemd/user"
     echo "Installing tailscaled service"
+    socks5_port=$(port 6999 9999)
+    proxy_port=$(port 10000 12000)
     cat > "$HOME/.config/systemd/user/tailscaled.service" << EOS
 [Unit]
 Description=Tailscale Daemon
@@ -46,7 +54,7 @@ After=network.target
 
 [Service]
 EnvironmentFile=$HOME/.config/tailscale/env.conf
-ExecStart=$HOME/.local/bin/tailscaled --tun=userspace-networking --state=$HOME/.tmp/tailscale/tailscaled.state --socket=$HOME/.tmp/tailscale/tailscaled.sock
+ExecStart=$HOME/.local/bin/tailscaled --tun=userspace-networking --state=$HOME/.tmp/tailscale/tailscaled.state --socket=$HOME/.tmp/tailscale/tailscaled.sock --outbound-http-proxy-listen=${subnet}:${proxy_port} --socks5-server=${subnet}:${socks5_port}
 Restart=always
 RestartSec=3
 StartLimitInterval=0
