@@ -75,6 +75,7 @@ function _upgrade(){
     tar -xzf "$HOME/.tmp/tailscale.tgz" -C "$HOME/.tmp/"
     mv "$HOME/.tmp/tailscale_${version//v}_amd64/tailscale" "$HOME/.local/bin/tailscale"
     mv "$HOME/.tmp/tailscale_${version//v}_amd64/tailscaled" "$HOME/.local/bin/tailscaled"
+    
     chmod +x "$HOME/.local/bin/tailscale"
     chmod +x "$HOME/.local/bin/tailscaled"
     rm -rf "$HOME/.tmp/tailscale_${version//v}_amd64/"
@@ -82,6 +83,7 @@ function _upgrade(){
 }
 
 function _remove(){
+    "$HOME/.local/bin/tailscale" --socket="$HOME/.tmp/tailscale/tailscaled.sock" logout
     systemctl --user stop tailscaled
     systemctl --user disable --now tailscaled
     rm -f "$HOME/.local/bin/tailscale"
