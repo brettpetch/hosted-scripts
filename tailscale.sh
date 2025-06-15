@@ -80,7 +80,7 @@ function _upgrade(){
         exit 1
     fi
     systemctl --user stop tailscaled
-    version=$(github_latest_version "tailscale/tailscale")
+    version=$(tailscale_latest_version)
     curl -sL "https://pkgs.tailscale.com/stable/tailscale_${version}_amd64.tgz" -o "$HOME/.tmp/tailscale.tgz"
     tar -xzf "$HOME/.tmp/tailscale.tgz" -C "$HOME/.tmp/"
     mv "$HOME/.tmp/tailscale_${version}_amd64/tailscale" "$HOME/.local/bin/tailscale"
