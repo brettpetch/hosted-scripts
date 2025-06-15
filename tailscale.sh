@@ -12,27 +12,23 @@ function port() {
     comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
 
-function github_latest_version() {
-    # Argument expects the author/repo format
-    # e.g. swizzin/swizzin
-    repo=$1
-    curl -fsSLI -o /dev/null -w %{url_effective} https://github.com/${repo}/releases/latest | grep -o '[^/]*$'
+function tailscale_latest_version() {
+    curl -s https://pkgs.tailscale.com/stable/ | grep -oP 'tailscale_\K[0-9]+\.[0-9]+\.[0-9]+(?=_amd64\.tgz)' | head -n1
 }
-
 function _install(){
-    version=$(github_latest_version "tailscale/tailscale")
+    version=$(tailscale_latest_version)
     mkdir -p "$HOME/.local/bin"
     echo "Downloading tailscale"
     # Tempdir
     mkdir -p "$HOME/.tmp"
     # Download
-    curl -sL "https://pkgs.tailscale.com/stable/tailscale_${version//v}_amd64.tgz" -o "$HOME/.tmp/tailscale.tgz"
+    curl -sL "https://pkgs.tailscale.com/stable/tailscale_${version}_amd64.tgz" -o "$HOME/.tmp/tailscale.tgz"
     tar -xzf "$HOME/.tmp/tailscale.tgz" -C "$HOME/.tmp/"
-    mv "$HOME/.tmp/tailscale_${version//v}_amd64/tailscale" "$HOME/.local/bin/tailscale"
-    mv "$HOME/.tmp/tailscale_${version//v}_amd64/tailscaled" "$HOME/.local/bin/tailscaled"
+    mv "$HOME/.tmp/tailscale_${version}_amd64/tailscale" "$HOME/.local/bin/tailscale"
+    mv "$HOME/.tmp/tailscale_${version}_amd64/tailscaled" "$HOME/.local/bin/tailscaled"
     chmod +x "$HOME/.local/bin/tailscale"
     chmod +x "$HOME/.local/bin/tailscaled"
-    rm -rf "$HOME/.tmp/tailscale_${version//v}_amd64/"
+    rm -rf "$HOME/.tmp/tailscale_${version}_amd64/"
     rm -f "$HOME/.tmp/tailscale.tgz"
 
     # Configure Tailscale"
@@ -85,14 +81,14 @@ function _upgrade(){
     fi
     systemctl --user stop tailscaled
     version=$(github_latest_version "tailscale/tailscale")
-    curl -sL "https://pkgs.tailscale.com/stable/tailscale_${version//v}_amd64.tgz" -o "$HOME/.tmp/tailscale.tgz"
+    curl -sL "https://pkgs.tailscale.com/stable/tailscale_${version}_amd64.tgz" -o "$HOME/.tmp/tailscale.tgz"
     tar -xzf "$HOME/.tmp/tailscale.tgz" -C "$HOME/.tmp/"
-    mv "$HOME/.tmp/tailscale_${version//v}_amd64/tailscale" "$HOME/.local/bin/tailscale"
-    mv "$HOME/.tmp/tailscale_${version//v}_amd64/tailscaled" "$HOME/.local/bin/tailscaled"
+    mv "$HOME/.tmp/tailscale_${version}_amd64/tailscale" "$HOME/.local/bin/tailscale"
+    mv "$HOME/.tmp/tailscale_${version}_amd64/tailscaled" "$HOME/.local/bin/tailscaled"
     
     chmod +x "$HOME/.local/bin/tailscale"
     chmod +x "$HOME/.local/bin/tailscaled"
-    rm -rf "$HOME/.tmp/tailscale_${version//v}_amd64/"
+    rm -rf "$HOME/.tmp/tailscale_${version}_amd64/"
     if [[ ! -f "$HOME/.install/.tailscale.dev.lock" ]]; then
         touch "$HOME/.install/.tailscale.dev.lock"
     fi
