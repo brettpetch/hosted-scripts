@@ -81,13 +81,13 @@ function _install() {
     echo "Installing qbit_manage requirements"
     "$HOME/.venv/qbit_manage/bin/pip" install -U pip >> "$log" 2>&1
     "$HOME/.venv/qbit_manage/bin/pip" install wheel >> "$log" 2>&1
-    "$HOME/.venv/qbit_manage/bin/pip3" install -r "$HOME/scripts/qbit_manage/requirements.txt" >> "$log" 2>&1
+    "$HOME/.venv/qbit_manage/bin/pip3" install "$HOME/scripts/qbit_manage/" >> "$log" 2>&1
 }
 
 function _upgrade() {
   git -C "$HOME/scripts/qbit_manage" pull >> "$log" 2>&1
   "$HOME/.venv/qbit_manage/bin/pip" install -U pip >> "$log" 2>&1
-  "$HOME/.venv/qbit_manage/bin/pip3" install -r "$HOME/scripts/qbit_manage/requirements.txt" >> "$log" 2>&1
+  "$HOME/.venv/qbit_manage/bin/pip3" install "$HOME/scripts/qbit_manage/" >> "$log" 2>&1
 }
 
 function _remove() {
