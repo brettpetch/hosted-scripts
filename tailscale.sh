@@ -137,11 +137,13 @@ while true; do
     read -r -p "Enter it here: " choice
     case $choice in
         "install")
-            _install
+            # _install
+            echo "This script has been removed due to abuse"
             break
             ;;
         "upgrade")
-            _upgrade
+            # _upgrade
+            echo "This script has been removed due to abuse"
             break
             ;;
         "uninstall")
