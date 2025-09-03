@@ -84,7 +84,7 @@ level = "INFO"  # ERROR, DEBUG, INFO, WARN, TRACE
 sessionSecret = "${sessionSecret}"
 CFG
     read -rep "Please set a password for your qui user ${user}> " password
-    echo "${password}" | "$HOME/.local/bin/qui" create-user --config-dir "$HOME/.config/qui" --username "$user" || {
+    echo "${password}" | "$HOME/.local/bin/qui" create-user --config-dir "$HOME/.config/qui" --username "$user" --password "$password" || {
             echo "Failed to execute quictl command"
             exit 1
         }
