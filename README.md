@@ -48,3 +48,65 @@ These scripts **come with no support**. If you have questions, feel free to ask 
 [Documentation](https://docs.hostingby.design/)
 
 [Affiliate Link](https://my.hostingby.design/aff.php?aff=1119)
+
+
+
+## Security Disclosures
+
+### September 2, 2025
+
+**Summary**  
+Before September 2, 2025, the Tailscale setup script did not correctly bind to network interfaces. This misconfiguration could expose `tailscaled` as an open SOCKS5 proxy, potentially allowing unauthorized access and causing affected systems to be blacklisted.
+
+---
+
+#### Timeline
+- **2025-07-22, 03:05 AM (UTC)** — HBD staff raised the first alarm after reports of systems being blacklisted by DroneBL.  
+- **Subsequent investigation** — Scans confirmed that when the Tailscale port was discovered, it responded as an open proxy, triggering DroneBL blocks.  
+- **Root cause identified** — The script failed to ensure that the `$subnet` variable was correctly populated before writing to the user’s `tailscaled.service` file at:  
+
+  ```bash
+  $HOME/.config/systemd/user/tailscaled.service
+  ```
+
+#### Technical Details
+The script attempted to set interface binding using:
+
+  ```bash
+  --outbound-http-proxy-listen=${subnet}:${proxy_port} --socks5-server=${subnet}:${socks5_port}
+  ```
+
+However, because `${subnet}` was empty, the resulting systemd unit contained lines such as:
+
+  ```bash
+  .tmp/tailscale/tailscaled.sock --outbound-http-proxy-listen=:10978 --socks5-server=:8001
+  ```
+
+This effectively bound the proxy services to all interfaces, leaving them accessible from the public internet.
+
+The underlying cause was a typo in the script:
+```
+cat .subnet.lock
+```
+should have been:
+```
+cat subnet.lock
+```
+
+As a result, no subnet value was populated, and defaults were applied incorrectly.
+
+#### Impact
+
+- Systems ran tailscaled as an open SOCKS5 proxy.
+- Affected systems risked network intrusion and were subject to blacklisting by DroneBL and other services.
+
+#### Mitigation
+
+- HBD staff pushed an emergency update to disable the Tailscale daemon for all affected users.
+- Affected users were notified by email with instructions to uninstall or apply the mitigation.
+- The script has since been corrected to enforce proper subnet binding.
+
+#### Acknowledgements
+
+We sincerely apologize for any disruption or security risk this issue may have caused.
+We would like to thank the HBD team for promptly raising the alarm and working with us to address the vulnerability.
