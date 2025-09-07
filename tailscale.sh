@@ -4,7 +4,7 @@
 mkdir -p "$HOME/.logs/"
 export log="$HOME/.logs/tailscale.log"
 touch "$log"
-export subnet=$(cat "$HOME/subnet.lock")
+export subnet=$(cat "$HOME/.install/subnet.lock")
 
 function port() {
     LOW_BOUND=$1
