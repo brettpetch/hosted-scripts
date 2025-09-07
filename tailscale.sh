@@ -61,6 +61,7 @@ WantedBy=default.target
 
 EOS
 
+    systemctl --user daemon-reload
     systemctl --user enable --now tailscaled
     echo "Tailscaled started"
     echo "Setting up tailscale"
