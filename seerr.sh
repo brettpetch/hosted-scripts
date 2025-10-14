@@ -49,14 +49,14 @@ function _seerr_install() {
     # Bypass Node version requirement, build with latest LTS.
     sed -i 's|engine-strict=true|engine-strict=false|g' $HOME/seerr/.npmrc
     
-    echo "Installing dependencies via pnpm"
+    echo "Installing dependencies via pnpm (this might take a while)"
     pnpm install --prefix $HOME/seerr >> "$log" 2>&1 || {
         echo "Failed to install dependencies"
         exit 1
     }
     echo "Dependencies installed"
 
-    echo "Building seerr"
+    echo "Building seerr (this might take a while)"
     # Limit CPU
     sed -i "s|256000,|256000,\n    cpus: 6,|g" $HOME/seerr/next.config.js
     pnpm --prefix $HOME/seerr build >> "$log" 2>&1 || {
