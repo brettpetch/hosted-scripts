@@ -129,13 +129,9 @@ echo "exit = Exits Installer"
 while true; do
     read -r -p "Enter it here: " choice
     case $choice in
-        "install")
-            clear
-            _deps
-            _overseer_install
-            _service
-            break
-            ;;
+        "migrate")
+            _data_migration
+        ;;
         "uninstall")
             _remove
             break
