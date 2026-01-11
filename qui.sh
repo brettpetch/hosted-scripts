@@ -11,7 +11,7 @@ function port() {
     comm -23 <(seq ${LOW_BOUND} ${UPPER_BOUND} | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1
 }
 
-function autobrr_download_latest() {
+function qui_download_latest() {
     echo "Downloading qui release archive"
 
     case "$(dpkg --print-architecture)" in
@@ -139,7 +139,7 @@ while true; do
     read -r -p "Enter it here: " choice
     case $choice in
         "install")
-            autobrr_download_latest
+            qui_download_latest
             _systemd
             _add_user
             break
