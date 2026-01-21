@@ -4,6 +4,9 @@
 # Only use on shared slots.
 # Licensed under GNU General Public License v3.0
 # Logs stored at $HOME/.logs/migration.log
+
+#webhook="https://slack.com/blah"
+
 mkdir -p "$HOME/.logs/"
 export log="$HOME/.logs/migration.log"
 touch "$log"
@@ -123,6 +126,10 @@ EOF
     done
     echo "Copying data from $HOME to ${newhost}:\$HOME/old... This could take some time."
     rsync -ahH --info=progress2 "$HOME/" "${newuser}@${newhost}:old/" -e 'ssh -p22'
+    echo "Migration Complete"
+    if [[ -n $webhook ]]; then
+        curl -X POST -d '{"type": "section", "text": { "type": "mrkdwn", "text": "Migration complete for '$USER'!" }}' $webhook
+    fi
 }
 
 function runner() {
